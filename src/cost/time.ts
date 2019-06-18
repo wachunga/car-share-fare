@@ -15,34 +15,35 @@ export function calculateDefaultTimeCost(config: CarShareConfig, minutes: number
     return 0;
   }
 
-  let totalCost = 0;
-  let remainingMinutes = minutes;
   const applicableRates = chosenPackage.time
     .filter(rate => {
       const minRequired = rate.start === undefined ? rate.per : rate.start;
       return minutes >= minRequired;
     })
     .sort((a, b) => b.per - a.per); // largest granularity first
-  // console.log({ applicableRates });
-  applicableRates.forEach((rate, index) => {
-    // console.log({ remainingMinutes });
-    if (remainingMinutes > 0) {
-      const hasMoreRates = applicableRates[index + 1] !== undefined;
-      const roundingFunction = hasMoreRates ? 'floor' : 'ceil'; // leave partial up to next rate if present
-      // console.log({ roundingFunction, foo: remainingMinutes / rate.per });
-      const rateTimeUnits = Math.max(1, Math[roundingFunction](remainingMinutes / rate.per));
 
-      const maxCost = rate.maxCost || Number.POSITIVE_INFINITY;
-      let rateCost = rateTimeUnits * rate.cost;
-      if (rateCost > maxCost) {
-        rateCost = maxCost;
-        remainingMinutes = 0; // maxed out
-      } else {
-        remainingMinutes -= rateTimeUnits * rate.per;
-      }
-      // console.log({ rateTimeUnits, rateCost });
-      totalCost += rateCost;
+  let remainingMinutes = minutes;
+  let totalCost = 0;
+  for (let i = 0; i < applicableRates.length; i++) {
+    if (remainingMinutes <= 0) {
+      break;
     }
-  });
+    const rate = applicableRates[i];
+
+    const hasMoreRates = applicableRates[i + 1] !== undefined;
+    const roundingFunction = hasMoreRates ? 'floor' : 'ceil'; // leave partial up to next rate if present
+    const rateTimeUnits = Math.max(1, Math[roundingFunction](remainingMinutes / rate.per));
+
+    const maxCost = rate.maxCost || Number.POSITIVE_INFINITY;
+    let rateCost = rateTimeUnits * rate.cost;
+    if (rateCost > maxCost) {
+      rateCost = maxCost;
+      remainingMinutes = 0; // maxed out
+    } else {
+      remainingMinutes -= rateTimeUnits * rate.per;
+    }
+    totalCost += rateCost;
+  }
+
   return totalCost;
 }
