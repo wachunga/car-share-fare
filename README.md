@@ -6,9 +6,8 @@ Knowing which car share to use in Vancouver ([the car share capital of North Ame
 
 - [ ] add support for Evo
 - [ ] add a basic UI
-- [ ] add CI to run tests
+- [x] add CI to run tests
 - [ ] add support for car2go
-
 
 ## Development
 
