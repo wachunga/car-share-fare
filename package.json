@@ -11,7 +11,8 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --watchAll"
+    "test": "tsdx test --watchAll",
+    "test:ci": "tsdx test"
   },
   "jest": {
     "verbose": true,
