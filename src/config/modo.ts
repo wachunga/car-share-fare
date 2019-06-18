@@ -6,7 +6,7 @@ export const modo: CarShareConfig = {
   lastUpdated: '2019-06-15',
   currency: 'CAD',
   fees: {
-    trip: 1.5,
+    trip: 1.5, // co-op innovation fee
     annual: 1,
     share: 500,
   },

@@ -7,11 +7,25 @@ function sum(array: number[]): number {
   return array.reduce((memo, number) => memo + number, 0);
 }
 
+// TODO: return breakdowns, not sums
+type CostComparison = { [serviceKey: string]: number };
+
+/** Calculate trip cost using all services */
+export function computeCosts(minutes: number, distance: number) {
+  return Object.keys(configs).reduce(
+    (memo, key) => {
+      memo[key] = computeDefaultCost(key, minutes, distance);
+      return memo;
+    },
+    {} as CostComparison
+  );
+}
+
 /** Calculate trip cost using the first available package */
-export function calcDefaultCost(company: string, minutes: number, distance: number) {
-  const config = configs[company];
+export function computeDefaultCost(service: string, minutes: number, distance: number) {
+  const config = configs[service];
   if (!config) {
-    throw new Error(`No config found for company ${company}`);
+    throw new Error(`No config found for company ${service}`);
   }
 
   const fees = calculateTripFees(config.fees);
