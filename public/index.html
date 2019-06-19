@@ -1,0 +1,33 @@
+<html>
+  <body>
+    <form>
+      <div>
+        <label>Time (mins) <input id="minutesInput" type="number"/></label>
+      </div>
+      <div>
+        <label>Distance (km) <input id="distanceInput" type="number"/></label>
+      </div>
+      <button id="calculateButton">Go</button>
+    </form>
+    <pre id="results"></pre>
+  </body>
+  <script type="module">
+    import { computeCosts } from '../dist/car-share-fare.es.production.js';
+
+    const button = document.querySelector('#calculateButton');
+    button.addEventListener('click', calculate);
+
+    const minutes = document.querySelector('#minutesInput');
+    const distance = document.querySelector('#distanceInput');
+    const results = document.querySelector('#results');
+
+    function calculate(event) {
+      event.preventDefault();
+      const costs = computeCosts(minutes.value, distance.value);
+      const formatted = Object.keys(costs).map(key => {
+        return { key, cost: parseFloat(costs[key]).toFixed(2) };
+      });
+      results.innerHTML = JSON.stringify(formatted, null, 2);
+    }
+  </script>
+</html>
