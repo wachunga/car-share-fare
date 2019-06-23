@@ -1,5 +1,7 @@
 # car-share-fare
 
+[![CircleCI](https://circleci.com/gh/wachunga/car-share-fare.svg?style=svg)](https://circleci.com/gh/wachunga/car-share-fare)
+
 Knowing which car share to use in Vancouver ([the car share capital of North America](https://www.cbc.ca/news/canada/british-columbia/vancouver-car-share-car2go-evo-1.4504926)) is non-trivial. This tool aims to help by making it easy to compare costs.
 
 ## Development
