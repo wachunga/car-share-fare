@@ -11,6 +11,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
+    "now-build": "npm run build",
     "test": "tsdx test --watchAll",
     "test:ci": "tsdx test"
   },

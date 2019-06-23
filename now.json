@@ -1,3 +1,9 @@
 {
-  "version": 2
+  "version": 2,
+  "name": "careshare",
+  "alias": "carshare.now.sh",
+  "builds": [
+      { "src": "package.json", "use": "@now/static-build" },
+      { "src": "public/index.html", "use": "@now/static" }
+    ]
 }
