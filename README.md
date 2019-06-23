@@ -4,6 +4,8 @@
 
 Knowing which car share to use in Vancouver ([the car share capital of North America](https://www.cbc.ca/news/canada/british-columbia/vancouver-car-share-car2go-evo-1.4504926)) is non-trivial. This tool aims to help by making it easy to compare costs.
 
+Try it out at https://carshare.now.sh
+
 ## Development
 
 This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
@@ -23,3 +25,7 @@ The package is optimized and bundled with Rollup into multiple formats (CommonJS
 
 Runs the test watcher (Jest) in an interactive mode.
 By default, runs tests related to files changed since the last commit.
+
+### Deployment
+
+Each build is deployed to https://carshare.now.sh/ with [now](https://zeit.co/now). The configuration lives in `now.json`.
