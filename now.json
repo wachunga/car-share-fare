@@ -2,7 +2,8 @@
   "version": 2,
   "alias": "carshare.now.sh",
   "builds": [
-      { "src": "package.json", "use": "@now/static-build" },
-      { "src": "**/*.html", "use": "@now/static" }
-    ]
+    { "src": "package.json", "use": "@now/static-build" },
+    { "src": "**/*.html", "use": "@now/static" }
+  ],
+  "routes": [{ "src": "/", "dest": "www/index.html" }]
 }
