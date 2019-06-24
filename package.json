@@ -11,7 +11,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "now-build": "npm run build && cp -r www/ dist/",
+    "now-build": "npm run build && cp -Rv www/ dist",
     "test": "tsdx test --watchAll",
     "test:ci": "tsdx test"
   },
