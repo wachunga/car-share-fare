@@ -19,6 +19,7 @@ type CostComparison = { [serviceKey: string]: TripCost };
 
 /** Calculate trip cost using all services */
 export function computeCosts(minutes: number, distance: number) {
+  // TODO: sort by least expensive first
   return Object.keys(configs).reduce(
     (memo, key) => {
       memo[key] = computeDefaultCost(key, minutes, distance);

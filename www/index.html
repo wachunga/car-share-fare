@@ -16,6 +16,10 @@
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
       }
+      #results {
+        list-style-type: none;
+        padding: 0;
+      }
     </style>
   </head>
   <body>
@@ -28,7 +32,7 @@
       </div>
       <button id="calculateButton">Go</button>
     </form>
-    <pre id="results"></pre>
+    <ul id="results"></ul>
   </body>
   <script type="module">
     import { computeCosts } from './car-share-fare.es.production.js';
@@ -47,7 +51,15 @@
       const formatted = Object.keys(costComparison).map(key => {
         return { key, cost: parseFloat(costComparison[key].total).toFixed(2) };
       });
-      results.innerHTML = JSON.stringify(formatted, null, 2);
+      results.innerHTML = buildListResults(formatted);
+    }
+
+    function buildListResults(data) {
+      return data
+        .map(row => {
+          return `<li><strong>${row.key}</strong>: <span class="results-total">$${row.cost}</span></li>`;
+        })
+        .join('\n');
     }
   </script>
 </html>
