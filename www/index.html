@@ -12,13 +12,30 @@
       body {
         padding: 1rem;
       }
+
       * {
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
       }
-      #results {
-        list-style-type: none;
-        padding: 0;
+
+      @media (max-width: 576px) {
+        input,
+        button {
+          width: 100%;
+        }
+      }
+
+      .results__title {
+        line-height: 2rem;
+        border-bottom: 1px solid #ddd;
+      }
+      #results th {
+        text-align: left;
+        padding-right: 1rem;
+      }
+      .results__disclaimer {
+        color: #777;
+        font-size: 0.8rem;
       }
     </style>
   </head>
@@ -32,7 +49,11 @@
       </div>
       <button id="calculateButton">Go</button>
     </form>
-    <ul id="results"></ul>
+    <div id="results" hidden>
+        <h3 class="results__title">Costs</h3>
+        <div id="results__table"></div>
+        <small class="results__disclaimer">* Costs do not include tax.</small>
+    </div>
   </body>
   <script type="module">
     import { computeCosts } from './car-share-fare.es.production.js';
@@ -42,7 +63,8 @@
 
     const minutes = document.querySelector('#minutesInput');
     const distance = document.querySelector('#distanceInput');
-    const results = document.querySelector('#results');
+    const resultsTable = document.querySelector('#results__table');
+    const resultsSection = document.querySelector('#results');
 
     function calculate(event) {
       event.preventDefault();
@@ -51,15 +73,17 @@
       const formatted = Object.keys(costComparison).map(key => {
         return { key, cost: parseFloat(costComparison[key].total).toFixed(2) };
       });
-      results.innerHTML = buildListResults(formatted);
+      resultsTable.innerHTML = buildResultsTable(formatted);
+      resultsSection.removeAttribute('hidden');
     }
 
-    function buildListResults(data) {
-      return data
-        .map(row => {
-          return `<li><strong>${row.key}</strong>: <span class="results-total">$${row.cost}</span></li>`;
+    function buildResultsTable(data) {
+      const rowData =
+        data.map(row => {
+          return `<tr><th>${row.key}</th><td>$${row.cost}</td></tr>`;
         })
         .join('\n');
+      return `<table><tbody>${rowData}</tbody></table>`;
     }
   </script>
 </html>
