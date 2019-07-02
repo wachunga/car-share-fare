@@ -7,8 +7,15 @@ function sum(array: number[]): number {
   return array.reduce((memo, number) => memo + number, 0);
 }
 
-// TODO: return breakdowns, not sums
-type CostComparison = { [serviceKey: string]: number };
+type TripCost = {
+  total: number;
+  breakdown: {
+    fees: number;
+    time: number;
+    distance: number;
+  };
+};
+type CostComparison = { [serviceKey: string]: TripCost };
 
 /** Calculate trip cost using all services */
 export function computeCosts(minutes: number, distance: number) {
@@ -22,15 +29,19 @@ export function computeCosts(minutes: number, distance: number) {
 }
 
 /** Calculate trip cost using the first available package */
-export function computeDefaultCost(service: string, minutes: number, distance: number) {
+export function computeDefaultCost(service: string, minutes: number = 0, distance: number = 0) {
   const config = configs[service];
   if (!config) {
     throw new Error(`No config found for company ${service}`);
   }
 
-  const fees = calculateTripFees(config.fees);
-  const timeCost = calculateDefaultTimeCost(config, minutes);
-  const distanceCost = calculateDistanceCost(config.distance, distance);
-  // console.log({ fees, timeCost, distanceCost });
-  return sum([fees, timeCost, distanceCost]);
+  const breakdown = {
+    fees: calculateTripFees(config.fees),
+    time: calculateDefaultTimeCost(config, minutes),
+    distance: calculateDistanceCost(config.distance, distance),
+  };
+  return {
+    total: sum([breakdown.fees, breakdown.time, breakdown.distance]),
+    breakdown,
+  };
 }

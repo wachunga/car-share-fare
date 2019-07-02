@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Car Share Fare</title>
     <link rel="shortcut icon" href="./favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
@@ -21,10 +21,10 @@
   <body>
     <form>
       <div>
-        <label>Time (mins) <input id="minutesInput" type="number" autofocus/></label>
+        <label>Time (mins) <input id="minutesInput" type="number" autofocus min="0"/></label>
       </div>
       <div>
-        <label>Distance (km) <input id="distanceInput" type="number"/></label>
+        <label>Distance (km) <input id="distanceInput" type="number" min="0"/></label>
       </div>
       <button id="calculateButton">Go</button>
     </form>
@@ -42,9 +42,10 @@
 
     function calculate(event) {
       event.preventDefault();
-      const costs = computeCosts(minutes.value, distance.value);
-      const formatted = Object.keys(costs).map(key => {
-        return { key, cost: parseFloat(costs[key]).toFixed(2) };
+      const costComparison = computeCosts(minutes.value, distance.value);
+      console.log(costComparison);
+      const formatted = Object.keys(costComparison).map(key => {
+        return { key, cost: parseFloat(costComparison[key].total).toFixed(2) };
       });
       results.innerHTML = JSON.stringify(formatted, null, 2);
     }
