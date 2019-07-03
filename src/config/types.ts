@@ -29,10 +29,11 @@ type DistanceSteps = {
   // currency
 };
 
-type PackageConfig = {
+export type PackageConfig = {
   name: string;
   vehicle?: string;
   maxPassengers?: number;
+  distance?: DistanceConfig;
   time?: TimeConfig[];
 };
 

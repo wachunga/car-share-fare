@@ -1,9 +1,6 @@
 import { computeDefaultCost, computeCosts } from './cost';
 import { toHours, toDays } from './time';
 
-// TODO: handle money properly to avoid floating point issues
-// maybe use https://github.com/sarahdayan/dinero.js (comes with formatting, currencies, etc)
-
 describe('computeCosts', () => {
   it('computeCosts', () => {
     const minutes = 30;
@@ -98,6 +95,36 @@ describe('computeDefaultCost', () => {
     it('2 days, 2 hours, 5 minutes', () => {
       const timeCost = 2 * dailyRate + 2 * hourlyRate + 5 * minuteRate;
       expect(computeDefaultCost('evo', toDays(2) + toHours(2) + 5, 10)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+  });
+
+  describe('car2go', () => {
+    const tripCost = 1;
+    const minuteRateSmart = 0.32;
+
+    it('16 minutes', () => {
+      const timeCost = 16 * minuteRateSmart;
+      expect(computeDefaultCost('car2go', 16, 10)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+
+    it('1 hour, 10 minutes (minute rate)', () => {
+      const timeCost = 70 * minuteRateSmart;
+      expect(computeDefaultCost('car2go', toHours(1) + 10, 10)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+
+    it('1 hour, 10 minutes (1 hour package)', () => {
+      const hourPackageCost = 13;
+      const timeCost = hourPackageCost + minuteRateSmart * 10;
+      expect(computeDefaultCost('car2go', toHours(1) + 10, 10)).toHaveProperty(
         'total',
         tripCost + timeCost
       );
