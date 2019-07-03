@@ -6,7 +6,7 @@ export const modo: CarShareConfig = {
   lastUpdated: '2019-06-15',
   currency: 'CAD',
   fees: {
-    trip: 1.5, // co-op innovation fee
+    trip: 1.5, // "co-op innovation fee"
     annual: 1,
     share: 500,
   },
@@ -17,8 +17,8 @@ export const modo: CarShareConfig = {
   packages: [
     {
       name: 'Daily Drives',
-      vehicle: 'various',
-      maxPassengers: 5, // TODO: verify
+      vehicle: 'Prius, Rondo, ...',
+      maxPassengers: 7,
       time: [
         { start: 0, per: 15, cost: 1 },
         { per: 60, cost: 4, maxCost: 52 },
@@ -27,8 +27,8 @@ export const modo: CarShareConfig = {
     },
     {
       name: 'Large and Loadable',
-      vehicle: 'Rogue, Tucson, Sedona, RAV4, Grand Caravan, NEXO, Frontier, NV200',
-      maxPassengers: 8, // TODO: verify
+      vehicle: 'Rogue, Tucson, Sedona, RAV4, Grand Caravan, Sienna, NEXO, Frontier, NV200',
+      maxPassengers: 8,
       time: [
         { start: 0, per: 15, cost: 1.5 },
         { start: 0, per: 60, cost: 6, maxCost: 78 },
@@ -38,7 +38,7 @@ export const modo: CarShareConfig = {
     {
       name: 'Oversize and Premium',
       vehicle: 'BMW X1, Ram Promaster',
-      maxPassengers: 8, // TODO: verify
+      maxPassengers: 5, // promaster is only 3
       time: [
         { start: 0, per: 15, cost: 2.25 },
         { start: 0, per: 60, cost: 9, maxCost: 117 },
