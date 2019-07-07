@@ -1,4 +1,4 @@
-import { CarShareConfig } from 'config';
+import { PackageConfig } from 'config';
 
 export function toHours(hours: number): number {
   return hours * 60;
@@ -8,14 +8,13 @@ export function toDays(days: number): number {
   return days * 24 * 60;
 }
 
-/** Calculate time cost using the first available package */
-export function calculateDefaultTimeCost(config: CarShareConfig, minutes: number): number {
-  const chosenPackage = config.packages[0];
-  if (!chosenPackage.time || chosenPackage.time.length === 0) {
+/** Calculate time cost for provided package */
+export function calculateTimeCost(carSharePackage: PackageConfig, minutes: number): number {
+  if (!carSharePackage.time || carSharePackage.time.length === 0) {
     return 0;
   }
 
-  const applicableRates = chosenPackage.time
+  const applicableRates = carSharePackage.time
     .filter(rate => {
       const minRequired = rate.start === undefined ? rate.per : rate.start;
       return minutes >= minRequired;
