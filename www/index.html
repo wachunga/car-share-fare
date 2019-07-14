@@ -11,11 +11,17 @@
     <style>
       body {
         padding: 1rem;
+        font-family: sans-serif;
+        margin-bottom: 8rem;
       }
 
       * {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      input,
+      button {
+        margin-bottom: 1.2rem;
       }
 
       @media (max-width: 576px) {
@@ -26,19 +32,37 @@
       }
 
       .results__title {
-        line-height: 2rem;
-        border-bottom: 1px solid #ddd;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #ddd;
+      }
+      #results td,
+      #results th {
+        padding: 0.4rem;
       }
       #results th {
         text-align: left;
-        padding-right: 1rem;
+        font-weight: normal;
+      }
+      .results__index-cell {
+        color: #777;
+        text-align: right;
+        vertical-align: top;
+      }
+      .results__package-name {
+        font-style: italic;
+      }
+      .results__cost-cell {
+        text-align: right;
+        vertical-align: top;
       }
       .results__disclaimer {
         color: #777;
         font-size: 0.8rem;
+        margin-left: 0.8rem;
       }
     </style>
   </head>
+
   <body>
     <form>
       <div>
@@ -47,16 +71,17 @@
       <div>
         <label>Distance (km) <input id="distanceInput" type="number" min="0"/></label>
       </div>
-      <button id="calculateButton">Go</button>
+      <button id="calculateButton">Calculate</button>
     </form>
     <div id="results" hidden>
-        <h3 class="results__title">Costs</h3>
-        <div id="results__table"></div>
-        <small class="results__disclaimer">* Costs do not include tax.</small>
+      <h3 class="results__title">Costs</h3>
+      <div id="results__table"></div>
+      <small class="results__disclaimer">* Costs do not include tax.</small>
     </div>
   </body>
+
   <script type="module">
-    import { computeCosts } from './car-share-fare.es.production.js';
+    import { computeAllTripCosts } from './car-share-fare.es.production.js';
 
     const button = document.querySelector('#calculateButton');
     button.addEventListener('click', calculate);
@@ -68,22 +93,26 @@
 
     function calculate(event) {
       event.preventDefault();
-      const costComparison = computeCosts(minutes.value, distance.value);
+      const costComparison = computeAllTripCosts(minutes.value, distance.value);
       console.log(costComparison);
-      const formatted = Object.keys(costComparison).map(key => {
-        return { key, cost: parseFloat(costComparison[key].total).toFixed(2) };
-      });
-      resultsTable.innerHTML = buildResultsTable(formatted);
+      resultsTable.innerHTML = buildResultsTable(costComparison);
       resultsSection.removeAttribute('hidden');
     }
 
     function buildResultsTable(data) {
-      const rowData =
-        data.map(row => {
-          return `<tr><th>${row.key}</th><td>$${row.cost}</td></tr>`;
+      const rowData = data
+        .map((row, i) => {
+          return `<tr>
+            <td class="results__index-cell">${1 + i}.</td>
+            <th>
+              <div class="results__service-name">${row.service}</div>
+              <div class="results__package-name">${row.package}</div>
+            </th>
+            <td class="results__cost-cell">$${row.total.toFixed(2)}</td>
+          </tr>`;
         })
         .join('\n');
-      return `<table><tbody>${rowData}</tbody></table>`;
+      return `<table class=""><tbody>${rowData}</tbody></table>`;
     }
   </script>
 </html>

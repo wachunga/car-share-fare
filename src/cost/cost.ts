@@ -1,6 +1,6 @@
-import { configs } from '../config';
+import { packages, PackageConfig } from '../config';
 import { calculateTripFees } from './trip';
-import { calculateDefaultTimeCost } from './time';
+import { calculateTimeCost } from './time';
 import { calculateDistanceCost } from './distance';
 
 function sum(array: number[]): number {
@@ -8,6 +8,8 @@ function sum(array: number[]): number {
 }
 
 type TripCost = {
+  package: string;
+  service: string;
   total: number;
   breakdown: {
     fees: number;
@@ -15,33 +17,32 @@ type TripCost = {
     distance: number;
   };
 };
-type CostComparison = { [serviceKey: string]: TripCost };
 
-/** Calculate trip cost using all services */
-export function computeCosts(minutes: number, distance: number) {
-  // TODO: sort by least expensive first
-  return Object.keys(configs).reduce(
-    (memo, key) => {
-      memo[key] = computeDefaultCost(key, minutes, distance);
-      return memo;
-    },
-    {} as CostComparison
-  );
+/** Calculate trip cost for all available packages. */
+export function computeAllTripCosts(minutes: number, distance: number): TripCost[] {
+  return packages
+    .map(pack => computeTripCost(pack, minutes, distance))
+    .sort((costA, costB) => costA.total - costB.total);
 }
 
-/** Calculate trip cost using the first available package */
-export function computeDefaultCost(service: string, minutes: number = 0, distance: number = 0) {
-  const config = configs[service];
-  if (!config) {
-    throw new Error(`No config found for company ${service}`);
+/** Calculate trip cost for the provided package. */
+export function computeTripCost(
+  carSharePackage: PackageConfig,
+  minutes: number = 0,
+  distance: number = 0
+): TripCost {
+  if (!carSharePackage) {
+    throw new Error(`No package provided`);
   }
 
   const breakdown = {
-    fees: calculateTripFees(config.fees),
-    time: calculateDefaultTimeCost(config, minutes),
-    distance: calculateDistanceCost(config.distance, distance),
+    fees: calculateTripFees(carSharePackage),
+    time: calculateTimeCost(carSharePackage, minutes),
+    distance: calculateDistanceCost(carSharePackage, distance),
   };
   return {
+    package: carSharePackage.name,
+    service: carSharePackage.service,
     total: sum([breakdown.fees, breakdown.time, breakdown.distance]),
     breakdown,
   };

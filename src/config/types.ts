@@ -1,13 +1,3 @@
-export type CarShareConfig = {
-  key: string;
-  url?: string;
-  lastUpdated?: string;
-  currency?: string;
-  fees?: CarShareFees;
-  distance?: DistanceConfig;
-  packages: PackageConfig[];
-};
-
 export type CarShareFees = {
   trip?: number;
   daily?: number; // fees on longer trips
@@ -29,11 +19,21 @@ type DistanceSteps = {
   // currency
 };
 
-type PackageConfig = {
+export type PackageConfig = {
   name: string;
   vehicle?: string;
   maxPassengers?: number;
+  distance?: DistanceConfig;
   time?: TimeConfig[];
+} & CarShareConfig;
+
+export type CarShareConfig = {
+  service: string;
+  url?: string;
+  lastUpdated?: string;
+  currency?: string;
+  fees?: CarShareFees;
+  distance?: DistanceConfig;
 };
 
 type TimeConfig = {
