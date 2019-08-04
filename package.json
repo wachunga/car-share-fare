@@ -9,7 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "start": "tsdx watch",
+    "start": "npx http-server dist/ -o",
+    "start:watch": "tsdx watch",
     "build": "tsdx build && cp -Rv www/* dist",
     "now-build": "npm run build",
     "test": "tsdx test --watchAll",

@@ -9,6 +9,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
     <style>
+      :root {
+        --primary-accent: #db3148;
+        --primary-accent-2: #db3148dd;
+      }
+
       body {
         padding: 1rem;
         font-family: sans-serif;
@@ -19,13 +24,55 @@
         font-size: 1.1rem;
       }
 
-      input,
-      button {
+      .page-heading {
+        font-size: 1.5rem;
+        margin: 0 0 1rem 0;
+      }
+      .section-heading {
+        margin: 0 0 0.5rem 0;
+      }
+
+      .calculate-button {
+        padding: 0.5rem 2rem;
+        margin-bottom: 0.5rem;
+        background-color: var(--primary-accent);
+        color: white;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+      }
+      .calculate-button:hover {
+        background-color: var(--primary-accent-2);
+      }
+
+      .calculate-disclaimer,
+      .calculate-disclaimer a {
+        color: #777;
+        font-size: 0.8rem;
+      }
+      .calculate-disclaimer {
+        margin-bottom: 1rem;
+      }
+
+      .fieldset {
         margin-bottom: 1.2rem;
       }
 
+      .time-fieldset label {
+        margin-right: 0.5rem;
+      }
+
+      input {
+        width: 100px;
+      }
+
       @media (max-width: 576px) {
-        input,
+        .time-fieldset label {
+          display: block;
+        }
+        .time-fieldset input {
+          margin-bottom: 0.4rem;
+        }
         button {
           width: 100%;
         }
@@ -55,45 +102,64 @@
         text-align: right;
         vertical-align: top;
       }
-      .results__disclaimer {
-        color: #777;
-        font-size: 0.8rem;
-        margin-left: 0.8rem;
-      }
     </style>
   </head>
 
   <body>
+    <h1 class="page-heading">Car Share Fare - YVR</h1>
     <form>
-      <div>
-        <label>Time (mins) <input id="minutesInput" type="number" autofocus min="0"/></label>
+      <div class="fieldset time-fieldset">
+        <h2 class="section-heading">Time</h2>
+        <label><input id="minutesInput" type="number" autofocus min="0" /> mins</label>
+        <label><input id="hoursInput" type="number" min="0" /> hours</label>
+        <label><input id="daysInput" type="number" min="0" /> days</label>
       </div>
-      <div>
-        <label>Distance (km) <input id="distanceInput" type="number" min="0"/></label>
+      <div class="fieldset distance-fieldset">
+        <h2 class="section-heading">Distance</h2>
+        <label><input id="distanceInput" type="number" min="0" /> km</label>
       </div>
-      <button id="calculateButton">Calculate</button>
+      <button type="submit" class="calculate-button">Calculate Costs</button>
+      <small class="calculate-disclaimer"
+        >* Excluding tax.
+        <a
+          href="https://github.com/wachunga/car-share-fare/blob/master/CHANGELOG.md"
+          target="_blank"
+          >Are these costs up-to-date?</a
+        ></small
+      >
     </form>
     <div id="results" hidden>
       <h3 class="results__title">Costs</h3>
-      <div id="results__table"></div>
-      <small class="results__disclaimer">* Costs do not include tax.</small>
+      <div class="results__table"></div>
+      <small class="results__disclaimer"></small>
     </div>
   </body>
 
   <script type="module">
     import { computeAllTripCosts } from './car-share-fare.es.production.js';
 
-    const button = document.querySelector('#calculateButton');
+    const button = document.querySelector('.calculate-button');
     button.addEventListener('click', calculate);
 
-    const minutes = document.querySelector('#minutesInput');
-    const distance = document.querySelector('#distanceInput');
-    const resultsTable = document.querySelector('#results__table');
+    const minutesInput = document.querySelector('#minutesInput');
+    const hoursInput = document.querySelector('#hoursInput');
+    const daysInput = document.querySelector('#daysInput');
+
+    const distanceInput = document.querySelector('#distanceInput');
     const resultsSection = document.querySelector('#results');
+    const resultsTable = document.querySelector('.results__table');
+
+    function getTimeMinutes() {
+      const minutes = parseInt(minutesInput.value, 10) || 0;
+      const hours = parseInt(hoursInput.value, 10) || 0;
+      const days = parseInt(daysInput.value, 10) || 0;
+      return minutes + hours * 60 + days * 24 * 60;
+    }
 
     function calculate(event) {
       event.preventDefault();
-      const costComparison = computeAllTripCosts(minutes.value, distance.value);
+      const minutes = getTimeMinutes();
+      const costComparison = computeAllTripCosts(minutes, distanceInput.value);
       console.log(costComparison);
       resultsTable.innerHTML = buildResultsTable(costComparison);
       resultsSection.removeAttribute('hidden');
