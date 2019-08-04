@@ -148,7 +148,8 @@ describe('computePackageCost', () => {
     const mercedesMinutePackage = findPackage('Mercedes - minute rate') as PackageConfig;
     const tripCost = 1;
     const minuteRateSmart = 0.32;
-    const surchargePerExtraKm = 0.45;
+    const surchargePerExtraMinuteSmart = 0.37;
+    const surchargePerExtraKm = 0.49;
     const minimalKm = 10;
 
     it('smart is cheapest option', () => {
@@ -194,7 +195,7 @@ describe('computePackageCost', () => {
       it('1 hour, 10 minutes', () => {
         const time = toHours(1) + 10;
         const hourPackageCost = 13;
-        const timeCost = hourPackageCost + minuteRateSmart * 10;
+        const timeCost = hourPackageCost + surchargePerExtraMinuteSmart * 10;
         expect(computeTripCost(smartHourPackage, time, minimalKm)).toHaveProperty(
           'total',
           tripCost + timeCost

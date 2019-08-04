@@ -40,7 +40,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toHours(1), cost: 13 }, { start: toHours(1), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toHours(1), cost: 13 }, { start: toHours(1), per: 1, cost: 0.37 }],
     distance: common200KmIncluded,
   },
   {
@@ -57,7 +57,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toHours(3), cost: 35 }, { start: toHours(3), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toHours(3), cost: 35 }, { start: toHours(3), per: 1, cost: 0.37 }],
     distance: common200KmIncluded,
   },
   {
@@ -74,7 +74,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toHours(6), cost: 49 }, { start: toHours(6), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toHours(6), cost: 49 }, { start: toHours(6), per: 1, cost: 0.37 }],
     distance: common200KmIncluded,
   },
   {
@@ -91,7 +91,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toDays(1), cost: 69 }, { start: toDays(1), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toDays(1), cost: 69 }, { start: toDays(1), per: 1, cost: 0.37 }],
     distance: common200KmIncluded,
   },
   {
@@ -108,7 +108,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toDays(2), cost: 129 }, { start: toDays(2), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toDays(2), cost: 129 }, { start: toDays(2), per: 1, cost: 0.37 }],
     distance: fourHundredKmIncluded,
   },
   {
@@ -125,7 +125,7 @@ const packages: PackageConfig[] = [
     ...commonConfig,
     vehicle: 'smart fortwo',
     maxPassengers: 2,
-    time: [{ start: 0, per: toDays(3), cost: 179 }, { start: toDays(3), per: 1, cost: 0.32 }],
+    time: [{ start: 0, per: toDays(3), cost: 179 }, { start: toDays(3), per: 1, cost: 0.37 }],
     distance: sixHundredKmIncluded,
   },
   {
@@ -141,7 +141,7 @@ const packages: PackageConfig[] = [
 function withKmIncluded(km: number) {
   return {
     unit: 'km',
-    steps: [{ start: 0, end: km, cost: 0 }, { start: km, cost: 0.45 }],
+    steps: [{ start: 0, end: km, cost: 0 }, { start: km, cost: 0.49 }],
   };
 }
 
