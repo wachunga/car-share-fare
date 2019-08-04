@@ -10,6 +10,12 @@ Try it out at https://carshare.now.sh
 
 This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
 
+### Making a new release
+
+- Update [CHANGELOG.md](./CHANGELOG.md) and commit that.
+- Run `npm version <patch/minor/major>` (this updates package.json and creates a tag).
+- Run `git push --tags`.
+
 ### `npm start` or `yarn start`
 
 Runs the project in development/watch mode. Your project will be rebuilt upon changes. TSDX has a special logger for you convenience. Error messages are pretty printed and formatted for compatibility VS Code's Problems tab.
