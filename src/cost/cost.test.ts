@@ -39,54 +39,88 @@ describe('computePackageCost', () => {
   });
 
   describe('modo', () => {
-    const dailyDrivesPackage = findPackage('Daily Drives') as PackageConfig;
-    const tripCost = 1.5;
+    const perTripFee = 1.5;
     const hourlyRate = 4;
     const dailyRate = 52;
-    const costPerKm = 0.4;
 
-    it('1 hour', () => {
-      const time = toHours(1);
-      const timeCost = hourlyRate;
-      const distance = 10;
-      const distanceCost = distance * costPerKm;
-      expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
-        'total',
-        tripCost + timeCost + distanceCost
-      );
+    describe('daily drives', () => {
+      const dailyDrivesPackage = findPackage('Daily Drives') as PackageConfig;
+      const costPerKm = 0.4;
+
+      it('1 hour', () => {
+        const time = toHours(1);
+        const timeCost = hourlyRate;
+        const distance = 10;
+        const distanceCost = distance * costPerKm;
+        expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost + distanceCost
+        );
+      });
+
+      it('1 hour, 10 minutes (rounds to next 15 min increment)', () => {
+        const time = toHours(1) + 10;
+        const timeCost = hourlyRate + hourlyRate / 4; // 15 mins = 1/4 of hour
+        const distance = 10;
+        const distanceCost = distance * costPerKm;
+        expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost + distanceCost
+        );
+      });
+
+      it('16 hours, 30 minutes', () => {
+        const time = toHours(16) + 30;
+        const timeCost = dailyRate; // 16 hours is enough to hit daily rate
+        const distance = 100;
+        const distanceCost = 25 * costPerKm + 75 * 0.28; // subsequent km are cheaper
+        expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost + distanceCost
+        );
+      });
+
+      it('2 days, 2 hours, 5 minutes', () => {
+        const time = toDays(2) + toHours(2) + 5;
+        const timeCost = 2 * dailyRate + 2 * hourlyRate + hourlyRate / 4;
+        const distance = 10;
+        const distanceCost = 4;
+        expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost + distanceCost
+        );
+      });
     });
 
-    it('1 hour, 10 minutes (rounds to next 15 min increment)', () => {
-      const time = toHours(1) + 10;
-      const timeCost = hourlyRate + hourlyRate / 4; // 15 mins = 1/4 of hour
-      const distance = 10;
-      const distanceCost = distance * costPerKm;
-      expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
-        'total',
-        tripCost + timeCost + distanceCost
-      );
-    });
+    describe('day tripper', () => {
+      const dayTripperPackage = findPackage('Day Tripper - Daily Drives') as PackageConfig;
+      const dayTripperDayCost = 90;
+      const costPerKmOverage = 0.28;
 
-    it('16 hours, 30 minutes', () => {
-      const time = toHours(16) + 30;
-      const timeCost = dailyRate; // 16 hours is enough to hit daily rate
-      const distance = 100;
-      const distanceCost = 25 * costPerKm + 75 * 0.28; // subsequent km are cheaper
-      expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
-        'total',
-        tripCost + timeCost + distanceCost
-      );
-    });
+      const cases = [
+        [3, 125, perTripFee + 50], // not enough to trigger DayTripper
+        [10, 200, perTripFee + dayTripperDayCost],
+        [12, 150, perTripFee + dayTripperDayCost],
+        [24, 125, perTripFee + dayTripperDayCost],
+        [25, 140, perTripFee + dayTripperDayCost + hourlyRate],
+        [24, 250, perTripFee + dayTripperDayCost],
+        [25, 300, perTripFee + dayTripperDayCost + hourlyRate + 50 * costPerKmOverage],
 
-    it('2 days, 2 hours, 5 minutes', () => {
-      const time = toDays(2) + toHours(2) + 5;
-      const timeCost = 2 * dailyRate + 2 * hourlyRate + hourlyRate / 4;
-      const distance = 10;
-      const distanceCost = 4;
-      expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
-        'total',
-        tripCost + timeCost + distanceCost
-      );
+        [24, 300, perTripFee + dayTripperDayCost + 50 * costPerKmOverage],
+        [36, 250, perTripFee + dayTripperDayCost + hourlyRate * 12],
+        [36, 500, perTripFee + 2 * dayTripperDayCost],
+        [48, 500, perTripFee + 2 * dayTripperDayCost],
+        [48, 140, perTripFee + dayTripperDayCost + dailyRate], // not enough km to trigger DayTripper
+        [72, 1000, perTripFee + 3 * dayTripperDayCost + 250 * costPerKmOverage],
+      ];
+
+      it.each(cases)('%i hours, %i km', (hours, distance, total) => {
+        const minutes = toHours(hours);
+        expect(computeTripCost(dayTripperPackage, minutes, distance)).toHaveProperty(
+          'total',
+          total
+        );
+      });
     });
   });
 
@@ -99,7 +133,7 @@ describe('computePackageCost', () => {
     const irrelevantDistance = 10;
 
     it('distance is irrelevant', () => {
-      const hugeDistance = 1000000;
+      const hugeDistance = 1_000_000;
       expect(computeTripCost(evoPackage, 60, hugeDistance)).toHaveProperty(
         'total',
         tripCost + hourlyRate

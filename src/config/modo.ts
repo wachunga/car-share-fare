@@ -1,23 +1,28 @@
 import { CarShareConfig, PackageConfig } from './types';
+import { toDays } from '../cost/time';
+import { findPackage } from './index';
+import { computeTripCost } from '../cost/cost';
 
 const commonConfig: CarShareConfig = {
   service: 'Modo',
   url: 'https://www.modo.coop/plans/#tile-join-individual',
-  lastUpdated: '2019-07-02',
+  lastUpdated: '2019-08-05',
   currency: 'CAD',
-  distance: {
-    unit: 'km',
-    steps: [{ start: 0, end: 25, cost: 0.4 }, { start: 25, cost: 0.28 }],
-  },
-};
-
-const modoPlusConfig = {
   fees: {
     trip: 1.5, // "co-op innovation fee"
     annual: 1,
     share: 500,
   },
 };
+
+const modoPlusConfig = {
+  distance: {
+    unit: 'km',
+    steps: [{ start: 0, end: 25, cost: 0.4 }, { start: 25, cost: 0.28 }],
+  },
+};
+
+const dayTripperPerKmCost = 0.28;
 
 // TODO: add modo monthly packages (though they're always more expensive now)
 // TODO: overnight time charge capped at 3 hours between 7pm - 9am
@@ -57,6 +62,47 @@ const packages: PackageConfig[] = [
       { start: 0, per: 60, cost: 9, maxCost: 117 },
       { per: 60 * 24, cost: 117 },
     ],
+  },
+  {
+    name: 'Day Tripper - Daily Drives',
+    ...commonConfig,
+    vehicle: 'Prius, Rondo, ...',
+    maxPassengers: 7,
+    custom: function modoDayTripper(minutes, distance) {
+      const dayTripperCost = 90;
+      const regularPackage = findPackage('Daily Drives - Modo Plus') as any;
+
+      let cost = 0;
+      let minutesRemaining = minutes;
+      let distanceRemaining = distance;
+      let usingDayTripper = false;
+      while (minutesRemaining > 0) {
+        const minutesCapped = Math.min(minutesRemaining, toDays(1));
+        const regularPackageCost = computeTripCost(
+          regularPackage,
+          minutesCapped,
+          distanceRemaining
+        );
+        const regularDistanceCharge = usingDayTripper
+          ? distanceRemaining * dayTripperPerKmCost
+          : regularPackageCost.breakdown.distance;
+        const regularCost = regularPackageCost.breakdown.time + regularDistanceCharge;
+
+        if (dayTripperCost < regularCost) {
+          cost += dayTripperCost;
+          distanceRemaining -= Math.min(distanceRemaining, 250);
+          usingDayTripper = true;
+        } else {
+          cost += regularCost;
+          distanceRemaining = 0;
+        }
+        minutesRemaining -= minutesCapped;
+      }
+      if (distanceRemaining > 0) {
+        cost += distanceRemaining * 0.28;
+      }
+      return cost;
+    },
   },
 ];
 

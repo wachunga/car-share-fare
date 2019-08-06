@@ -25,6 +25,7 @@ export type PackageConfig = {
   maxPassengers?: number;
   distance?: DistanceConfig;
   time?: TimeConfig[];
+  custom?: (minutes: number, distance: number) => number;
 } & CarShareConfig;
 
 export type CarShareConfig = {

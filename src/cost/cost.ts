@@ -25,6 +25,17 @@ export function computeAllTripCosts(minutes: number, distance: number): TripCost
     .sort((costA, costB) => costA.total - costB.total);
 }
 
+function calculateCustomCost(
+  carSharePackage: PackageConfig,
+  minutes: number,
+  distance: number
+): number {
+  if (!carSharePackage.custom) {
+    return 0;
+  }
+  return carSharePackage.custom(minutes, distance);
+}
+
 /** Calculate trip cost for the provided package. */
 export function computeTripCost(
   carSharePackage: PackageConfig,
@@ -39,11 +50,12 @@ export function computeTripCost(
     fees: calculateTripFees(carSharePackage),
     time: calculateTimeCost(carSharePackage, minutes),
     distance: calculateDistanceCost(carSharePackage, distance),
+    custom: calculateCustomCost(carSharePackage, minutes, distance),
   };
   return {
     package: carSharePackage.name,
     service: carSharePackage.service,
-    total: sum([breakdown.fees, breakdown.time, breakdown.distance]),
+    total: sum([breakdown.fees, breakdown.time, breakdown.distance, breakdown.custom]),
     breakdown,
   };
 }
