@@ -137,8 +137,9 @@
   </body>
 
   <script type="module">
-    import { computeAllTripCosts } from './car-share-fare.es.production.js';
+    import { getAllPackages, computeAllTripCosts } from './car-share-fare.esm.js';
 
+    const packages = getAllPackages();
     const button = document.querySelector('.calculate-button');
     button.addEventListener('click', calculate);
 
@@ -160,7 +161,7 @@
     function calculate(event) {
       event.preventDefault();
       const minutes = getTimeMinutes();
-      const costComparison = computeAllTripCosts(minutes, distanceInput.value);
+      const costComparison = computeAllTripCosts(packages, minutes, distanceInput.value);
       console.log(costComparison);
       resultsTable.innerHTML = buildResultsTable(costComparison);
       resultsSection.removeAttribute('hidden');

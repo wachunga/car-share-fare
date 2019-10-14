@@ -1,6 +1,5 @@
 import { CarShareConfig, PackageConfig } from './types';
 import { toDays } from '../cost/time';
-import { findPackage } from './index';
 import { computeTripCost } from '../cost/cost';
 import { Money } from '../Money';
 
@@ -73,7 +72,9 @@ const packages: PackageConfig[] = [
     maxPassengers: 7,
     custom: function modoDayTripper(minutes, distance) {
       const dayTripperCost = new Money(90_00, currency);
-      const regularPackage = findPackage('Daily Drives - Modo Plus') as any;
+      const regularPackage = packages.find(
+        p => p.name === 'Daily Drives - Modo Plus'
+      ) as PackageConfig;
 
       let cost = Money.zero(currency);
       let minutesRemaining = minutes;
