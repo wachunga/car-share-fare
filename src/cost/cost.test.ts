@@ -172,6 +172,16 @@ describe('computePackageCost', () => {
     const dailyRate = 89.99;
     const irrelevantDistance = 10;
 
+    it('minimum cost', () => {
+      const time = 1;
+      const timeCost = time * minuteRate;
+      const distance = 0;
+      expect(computeTripCost(evoPackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+
     it('distance is irrelevant', () => {
       const hugeDistance = 1_000_000;
       expect(computeTripCost(evoPackage, 60, hugeDistance)).toHaveProperty(
@@ -225,6 +235,16 @@ describe('computePackageCost', () => {
     const surchargePerExtraMinuteSmart = 0.37;
     const surchargePerExtraKm = 0.49;
     const minimalKm = 10;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const timeCost = time * minuteRateSmart;
+      const distance = 0;
+      expect(computeTripCost(smartMinutePackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('smart is cheapest option', () => {
       const time = 16;
