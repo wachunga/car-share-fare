@@ -26,7 +26,7 @@ describe('computeCosts', () => {
   });
 });
 
-describe('computePackageCost', () => {
+describe('computeTripCost', () => {
   it('provides a breakdown', () => {
     const anyPackage = packages[0];
     const time = toHours(1);
@@ -36,6 +36,21 @@ describe('computePackageCost', () => {
     const calculatedTotal =
       computed.breakdown.fees + computed.breakdown.distance + computed.breakdown.time;
     expect(calculatedTotal).toBe(computed.total);
+  });
+
+  it('handles floating point math', () => {
+    const myPackage: PackageConfig = {
+      service: 'Test',
+      name: 'Floating Point',
+      fees: {
+        trip: 0.2,
+      },
+      time: [{ per: 60, cost: 0.1 }],
+    };
+
+    const time = toHours(1);
+    const distance = 0;
+    expect(computeTripCost(myPackage, time, distance)).toHaveProperty('total', 0.3);
   });
 
   describe('modo', () => {
