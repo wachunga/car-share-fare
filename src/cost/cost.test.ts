@@ -40,12 +40,22 @@ describe('computePackageCost', () => {
 
   describe('modo', () => {
     const perTripFee = 1.5;
-    const hourlyRate = 4;
-    const dailyRate = 52;
 
-    describe('daily drives', () => {
+    describe('daily drives package', () => {
       const dailyDrivesPackage = findPackage('Daily Drives') as PackageConfig;
       const costPerKm = 0.4;
+      const hourlyRate = 4;
+      const dailyRate = 52;
+
+      it('minimum cost - daily drives', () => {
+        const time = 1;
+        const timeCost = hourlyRate / 4; // min increment is 15 minutes
+        const distance = 0;
+        expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost
+        );
+      });
 
       it('1 hour', () => {
         const time = toHours(1);
@@ -90,35 +100,65 @@ describe('computePackageCost', () => {
           perTripFee + timeCost + distanceCost
         );
       });
+
+      describe('day tripper', () => {
+        const dayTripperPackage = findPackage('Day Tripper - Daily Drives') as PackageConfig;
+        const dayTripperDayCost = 90;
+        const costPerKmOverage = 0.28;
+
+        const cases = [
+          [3, 125, perTripFee + 50], // not enough to trigger DayTripper
+          [10, 200, perTripFee + dayTripperDayCost],
+          [12, 150, perTripFee + dayTripperDayCost],
+          [24, 125, perTripFee + dayTripperDayCost],
+          [25, 140, perTripFee + dayTripperDayCost + hourlyRate],
+          [24, 250, perTripFee + dayTripperDayCost],
+          [25, 300, perTripFee + dayTripperDayCost + hourlyRate + 50 * costPerKmOverage],
+
+          [24, 300, perTripFee + dayTripperDayCost + 50 * costPerKmOverage],
+          [36, 250, perTripFee + dayTripperDayCost + hourlyRate * 12],
+          [36, 500, perTripFee + 2 * dayTripperDayCost],
+          [48, 500, perTripFee + 2 * dayTripperDayCost],
+          [48, 140, perTripFee + dayTripperDayCost + dailyRate], // not enough km to trigger DayTripper
+          [72, 1000, perTripFee + 3 * dayTripperDayCost + 250 * costPerKmOverage],
+        ];
+
+        it.each(cases)('%i hours, %i km', (hours, distance, total) => {
+          const minutes = toHours(hours);
+          expect(computeTripCost(dayTripperPackage, minutes, distance)).toHaveProperty(
+            'total',
+            total
+          );
+        });
+      });
     });
 
-    describe('day tripper', () => {
-      const dayTripperPackage = findPackage('Day Tripper - Daily Drives') as PackageConfig;
-      const dayTripperDayCost = 90;
-      const costPerKmOverage = 0.28;
+    describe('large and loadable package', () => {
+      const loadablePackage = findPackage('Large and Loadable') as PackageConfig;
+      const loadableHourlyRate = 6;
 
-      const cases = [
-        [3, 125, perTripFee + 50], // not enough to trigger DayTripper
-        [10, 200, perTripFee + dayTripperDayCost],
-        [12, 150, perTripFee + dayTripperDayCost],
-        [24, 125, perTripFee + dayTripperDayCost],
-        [25, 140, perTripFee + dayTripperDayCost + hourlyRate],
-        [24, 250, perTripFee + dayTripperDayCost],
-        [25, 300, perTripFee + dayTripperDayCost + hourlyRate + 50 * costPerKmOverage],
-
-        [24, 300, perTripFee + dayTripperDayCost + 50 * costPerKmOverage],
-        [36, 250, perTripFee + dayTripperDayCost + hourlyRate * 12],
-        [36, 500, perTripFee + 2 * dayTripperDayCost],
-        [48, 500, perTripFee + 2 * dayTripperDayCost],
-        [48, 140, perTripFee + dayTripperDayCost + dailyRate], // not enough km to trigger DayTripper
-        [72, 1000, perTripFee + 3 * dayTripperDayCost + 250 * costPerKmOverage],
-      ];
-
-      it.each(cases)('%i hours, %i km', (hours, distance, total) => {
-        const minutes = toHours(hours);
-        expect(computeTripCost(dayTripperPackage, minutes, distance)).toHaveProperty(
+      it('minimum cost', () => {
+        const time = 1;
+        const timeCost = loadableHourlyRate / 4; // min increment is 15 minutes
+        const distance = 0;
+        expect(computeTripCost(loadablePackage, time, distance)).toHaveProperty(
           'total',
-          total
+          perTripFee + timeCost
+        );
+      });
+    });
+
+    describe('premium package', () => {
+      const premiumPackage = findPackage('Oversize and Premium') as PackageConfig;
+      const premiumHourlyRate = 9;
+
+      it('minimum cost', () => {
+        const time = 1;
+        const timeCost = premiumHourlyRate / 4; // min increment is 15 minutes
+        const distance = 0;
+        expect(computeTripCost(premiumPackage, time, distance)).toHaveProperty(
+          'total',
+          perTripFee + timeCost
         );
       });
     });
@@ -131,6 +171,16 @@ describe('computePackageCost', () => {
     const hourlyRate = 14.99;
     const dailyRate = 89.99;
     const irrelevantDistance = 10;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const timeCost = time * minuteRate;
+      const distance = 0;
+      expect(computeTripCost(evoPackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('distance is irrelevant', () => {
       const hugeDistance = 1_000_000;
@@ -185,6 +235,16 @@ describe('computePackageCost', () => {
     const surchargePerExtraMinuteSmart = 0.37;
     const surchargePerExtraKm = 0.49;
     const minimalKm = 10;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const timeCost = time * minuteRateSmart;
+      const distance = 0;
+      expect(computeTripCost(smartMinutePackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('smart is cheapest option', () => {
       const time = 16;
