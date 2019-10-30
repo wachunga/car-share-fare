@@ -42,7 +42,7 @@ const packages: PackageConfig[] = [
     maxPassengers: 8,
     time: [
       { start: 0, per: 15, cost: 1.5 },
-      { start: 0, per: 60, cost: 6, maxCost: 78 },
+      { per: 60, cost: 6, maxCost: 78 },
       { per: 60 * 24, cost: 78 },
     ],
   },
@@ -54,7 +54,7 @@ const packages: PackageConfig[] = [
     maxPassengers: 5, // promaster is only 3
     time: [
       { start: 0, per: 15, cost: 2.25 },
-      { start: 0, per: 60, cost: 9, maxCost: 117 },
+      { per: 60, cost: 9, maxCost: 117 },
       { per: 60 * 24, cost: 117 },
     ],
   },

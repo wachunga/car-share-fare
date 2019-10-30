@@ -40,14 +40,48 @@ describe('computePackageCost', () => {
 
   describe('modo', () => {
     const dailyDrivesPackage = findPackage('Daily Drives') as PackageConfig;
+    const loadablePackage = findPackage('Large and Loadable') as PackageConfig;
+    const premiumPackage = findPackage('Oversize and Premium') as PackageConfig;
     const tripCost = 1.5;
-    const hourlyRate = 4;
+    const dailyDrivesHourlyRate = 4;
     const dailyRate = 52;
     const costPerKm = 0.4;
+    const loadableHourlyRate = 6;
+    const premiumHourlyRate = 9;
+
+    it('minimum cost - daily drives', () => {
+      const time = 1;
+      const timeCost = dailyDrivesHourlyRate / 4; // min increment is 15 minutes
+      const distance = 0;
+      expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+
+    it('minimum cost - large and loadable', () => {
+      const time = 1;
+      const timeCost = loadableHourlyRate / 4; // min increment is 15 minutes
+      const distance = 0;
+      expect(computeTripCost(loadablePackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
+
+    it('minimum cost - premium', () => {
+      const time = 1;
+      const timeCost = premiumHourlyRate / 4; // min increment is 15 minutes
+      const distance = 0;
+      expect(computeTripCost(premiumPackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('1 hour', () => {
       const time = toHours(1);
-      const timeCost = hourlyRate;
+      const timeCost = dailyDrivesHourlyRate;
       const distance = 10;
       const distanceCost = distance * costPerKm;
       expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
@@ -58,7 +92,7 @@ describe('computePackageCost', () => {
 
     it('1 hour, 10 minutes (rounds to next 15 min increment)', () => {
       const time = toHours(1) + 10;
-      const timeCost = hourlyRate + hourlyRate / 4; // 15 mins = 1/4 of hour
+      const timeCost = dailyDrivesHourlyRate + dailyDrivesHourlyRate / 4; // 15 mins = 1/4 of hour
       const distance = 10;
       const distanceCost = distance * costPerKm;
       expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
@@ -80,7 +114,7 @@ describe('computePackageCost', () => {
 
     it('2 days, 2 hours, 5 minutes', () => {
       const time = toDays(2) + toHours(2) + 5;
-      const timeCost = 2 * dailyRate + 2 * hourlyRate + hourlyRate / 4;
+      const timeCost = 2 * dailyRate + 2 * dailyDrivesHourlyRate + dailyDrivesHourlyRate / 4;
       const distance = 10;
       const distanceCost = 4;
       expect(computeTripCost(dailyDrivesPackage, time, distance)).toHaveProperty(
@@ -97,6 +131,16 @@ describe('computePackageCost', () => {
     const hourlyRate = 14.99;
     const dailyRate = 89.99;
     const irrelevantDistance = 10;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const distance = 0;
+      const timeCost = 1 * minuteRate;
+      expect(computeTripCost(evoPackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('distance is irrelevant', () => {
       const hugeDistance = 1000000;
@@ -151,6 +195,16 @@ describe('computePackageCost', () => {
     const surchargePerExtraMinuteSmart = 0.37;
     const surchargePerExtraKm = 0.49;
     const minimalKm = 10;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const distance = 0;
+      const timeCost = 1 * minuteRateSmart;
+      expect(computeTripCost(smartMinutePackage, time, distance)).toHaveProperty(
+        'total',
+        tripCost + timeCost
+      );
+    });
 
     it('smart is cheapest option', () => {
       const time = 16;
