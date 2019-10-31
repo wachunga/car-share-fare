@@ -2,27 +2,30 @@ import { CarShareConfig, PackageConfig } from './types';
 import { toDays } from '../cost/time';
 import { findPackage } from './index';
 import { computeTripCost } from '../cost/cost';
+import { Money } from '../Money';
+
+const currency = 'CAD';
 
 const commonConfig: CarShareConfig = {
   service: 'Modo',
   url: 'https://www.modo.coop/plans/#tile-join-individual',
   lastUpdated: '2019-08-05',
-  currency: 'CAD',
+  currency,
   fees: {
-    trip: 1.5, // "co-op innovation fee"
-    annual: 1,
-    share: 500,
+    trip: 1_50, // "co-op innovation fee"
+    annual: 1_00,
+    share: 500_00,
   },
 };
 
 const modoPlusConfig = {
   distance: {
     unit: 'km',
-    steps: [{ start: 0, end: 25, cost: 0.4 }, { start: 25, cost: 0.28 }],
+    steps: [{ start: 0, end: 25, cost: 40 }, { start: 25, cost: 28 }],
   },
 };
 
-const dayTripperPerKmCost = 0.28;
+const dayTripperPerKmCost = new Money(28, currency);
 
 // TODO: add modo monthly packages (though they're always more expensive now)
 // TODO: overnight time charge capped at 3 hours between 7pm - 9am
@@ -34,9 +37,9 @@ const packages: PackageConfig[] = [
     vehicle: 'Prius, Rondo, ...',
     maxPassengers: 7,
     time: [
-      { start: 0, per: 15, cost: 1 },
-      { per: 60, cost: 4, maxCost: 52 },
-      { per: 60 * 24, cost: 52 },
+      { start: 0, per: 15, cost: 1_00 },
+      { per: 60, cost: 4_00, maxCost: 52_00 },
+      { per: 60 * 24, cost: 52_00 },
     ],
   },
   {
@@ -46,9 +49,9 @@ const packages: PackageConfig[] = [
     vehicle: 'Rogue, Tucson, Sedona, RAV4, Grand Caravan, Sienna, NEXO, Frontier, NV200',
     maxPassengers: 8,
     time: [
-      { start: 0, per: 15, cost: 1.5 },
-      { per: 60, cost: 6, maxCost: 78 },
-      { per: 60 * 24, cost: 78 },
+      { start: 0, per: 15, cost: 1_50 },
+      { per: 60, cost: 6_00, maxCost: 78_00 },
+      { per: 60 * 24, cost: 78_00 },
     ],
   },
   {
@@ -58,9 +61,9 @@ const packages: PackageConfig[] = [
     vehicle: 'BMW X1, Ram Promaster',
     maxPassengers: 5, // promaster is only 3
     time: [
-      { start: 0, per: 15, cost: 2.25 },
-      { per: 60, cost: 9, maxCost: 117 },
-      { per: 60 * 24, cost: 117 },
+      { start: 0, per: 15, cost: 2_25 },
+      { per: 60, cost: 9_00, maxCost: 117_00 },
+      { per: 60 * 24, cost: 117_00 },
     ],
   },
   {
@@ -69,10 +72,10 @@ const packages: PackageConfig[] = [
     vehicle: 'Prius, Rondo, ...',
     maxPassengers: 7,
     custom: function modoDayTripper(minutes, distance) {
-      const dayTripperCost = 90;
+      const dayTripperCost = new Money(90_00, currency);
       const regularPackage = findPackage('Daily Drives - Modo Plus') as any;
 
-      let cost = 0;
+      let cost = Money.zero(currency);
       let minutesRemaining = minutes;
       let distanceRemaining = distance;
       let usingDayTripper = false;
@@ -83,23 +86,23 @@ const packages: PackageConfig[] = [
           minutesCapped,
           distanceRemaining
         );
-        const regularDistanceCharge = usingDayTripper
-          ? distanceRemaining * dayTripperPerKmCost
+        const regularDistanceCharge: Money = usingDayTripper
+          ? dayTripperPerKmCost.multiply(distanceRemaining)
           : regularPackageCost.breakdown.distance;
-        const regularCost = regularPackageCost.breakdown.time + regularDistanceCharge;
+        const regularCost = regularPackageCost.breakdown.time.add(regularDistanceCharge);
 
-        if (dayTripperCost < regularCost) {
-          cost += dayTripperCost;
+        if (dayTripperCost.lessThan(regularCost)) {
+          cost = cost.add(dayTripperCost);
           distanceRemaining -= Math.min(distanceRemaining, 250);
           usingDayTripper = true;
         } else {
-          cost += regularCost;
+          cost = cost.add(regularCost);
           distanceRemaining = 0;
         }
         minutesRemaining -= minutesCapped;
       }
       if (distanceRemaining > 0) {
-        cost += distanceRemaining * 0.28;
+        cost = cost.add(dayTripperPerKmCost.multiply(distanceRemaining));
       }
       return cost;
     },

@@ -1,18 +1,20 @@
 import { PackageConfig } from 'config';
+import { Money } from '../Money';
 
-export function calculateDistanceCost(carSharePackage: PackageConfig, distance: number): number {
+export function calculateDistanceCost(carSharePackage: PackageConfig, distance: number): Money {
+  const currency = carSharePackage.currency;
   if (!carSharePackage.distance) {
-    return 0;
+    return Money.zero(currency);
   }
 
-  let totalCost = 0;
+  let totalCost = Money.zero(currency);
   let remainingDistance = distance;
   carSharePackage.distance.steps.forEach(step => {
     if (remainingDistance > 0) {
       const end = step.end || Number.POSITIVE_INFINITY;
       const stepDistance = Math.min(distance - step.start, end);
-      const stepCost = stepDistance * step.cost;
-      totalCost += stepCost;
+      const stepCost = new Money(step.cost, currency).multiply(stepDistance);
+      totalCost = totalCost.add(stepCost);
       remainingDistance -= stepDistance;
     }
   });

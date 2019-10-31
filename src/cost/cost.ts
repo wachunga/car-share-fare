@@ -2,19 +2,16 @@ import { packages, PackageConfig } from '../config';
 import { calculateTripFees } from './trip';
 import { calculateTimeCost } from './time';
 import { calculateDistanceCost } from './distance';
-
-function sum(array: number[]): number {
-  return array.reduce((memo, number) => memo + number, 0);
-}
+import { Money } from '../Money';
 
 type TripCost = {
   package: string;
   service: string;
-  total: number;
+  total: Money;
   breakdown: {
-    fees: number;
-    time: number;
-    distance: number;
+    fees: Money;
+    time: Money;
+    distance: Money;
   };
 };
 
@@ -22,16 +19,17 @@ type TripCost = {
 export function computeAllTripCosts(minutes: number, distance: number): TripCost[] {
   return packages
     .map(pack => computeTripCost(pack, minutes, distance))
-    .sort((costA, costB) => costA.total - costB.total);
+    .sort((costA, costB) => costA.total.amount - costB.total.amount);
 }
 
 function calculateCustomCost(
   carSharePackage: PackageConfig,
   minutes: number,
   distance: number
-): number {
+): Money {
+  const currency = carSharePackage.currency;
   if (!carSharePackage.custom) {
-    return 0;
+    return Money.zero(currency);
   }
   return carSharePackage.custom(minutes, distance);
 }
@@ -55,7 +53,7 @@ export function computeTripCost(
   return {
     package: carSharePackage.name,
     service: carSharePackage.service,
-    total: sum([breakdown.fees, breakdown.time, breakdown.distance, breakdown.custom]),
+    total: Money.sum([breakdown.fees, breakdown.time, breakdown.distance, breakdown.custom]),
     breakdown,
   };
 }

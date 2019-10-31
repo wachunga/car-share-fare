@@ -1,9 +1,11 @@
 import { PackageConfig } from 'config';
+import { Money } from '../Money';
 
 /** Calculate per trip fees. This does not include tax like PVRT. */
-export function calculateTripFees(carSharePackage: PackageConfig): number {
+export function calculateTripFees(carSharePackage: PackageConfig): Money {
+  const currency = carSharePackage.currency;
   if (!carSharePackage.fees) {
-    return 0;
+    return Money.zero(currency);
   }
-  return carSharePackage.fees.trip || 0;
+  return new Money(carSharePackage.fees.trip || 0, currency);
 }
