@@ -6,9 +6,9 @@ const commonConfig: CarShareConfig = {
   lastUpdated: '2019-07-02',
   currency: 'CAD',
   fees: {
-    trip: 1, // first 200 trips per calendar year
-    annual: 2,
-    registration: 35,
+    trip: 1_00, // first 200 trips per calendar year
+    annual: 2_00,
+    registration: 35_00,
   },
   // distance: unlimited
 };
@@ -20,9 +20,9 @@ const packages = [
     vehicle: 'Toyota Prius C',
     maxPassengers: 5,
     time: [
-      { per: 1, cost: 0.41, maxCost: 14.99 },
-      { per: 60, cost: 14.99, maxCost: 89.99 },
-      { per: 60 * 24, cost: 89.99 },
+      { per: 1, cost: 41, maxCost: 14_99 },
+      { per: 60, cost: 14_99, maxCost: 89_99 },
+      { per: 60 * 24, cost: 89_99 },
     ],
   },
 ];

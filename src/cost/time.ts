@@ -1,4 +1,5 @@
 import { PackageConfig } from 'config';
+import { Money } from '../Money';
 
 export function toHours(hours: number): number {
   return hours * 60;
@@ -9,9 +10,10 @@ export function toDays(days: number): number {
 }
 
 /** Calculate time cost for provided package */
-export function calculateTimeCost(carSharePackage: PackageConfig, minutes: number): number {
+export function calculateTimeCost(carSharePackage: PackageConfig, minutes: number): Money {
+  const currency = carSharePackage.currency;
   if (!carSharePackage.time || carSharePackage.time.length === 0) {
-    return 0;
+    return Money.zero(currency);
   }
 
   const applicableRates = carSharePackage.time
@@ -22,7 +24,7 @@ export function calculateTimeCost(carSharePackage: PackageConfig, minutes: numbe
     .sort((a, b) => b.per - a.per); // largest granularity first
 
   let remainingMinutes = minutes;
-  let totalCost = 0;
+  let totalCost = Money.zero(currency);
   for (let i = 0; i < applicableRates.length; i++) {
     if (remainingMinutes <= 0) {
       break;
@@ -33,15 +35,15 @@ export function calculateTimeCost(carSharePackage: PackageConfig, minutes: numbe
     const roundingFunction = hasMoreRates ? 'floor' : 'ceil'; // leave partial up to next rate if present
     const rateTimeUnits = Math.max(1, Math[roundingFunction](remainingMinutes / rate.per));
 
-    const maxCost = rate.maxCost || Number.POSITIVE_INFINITY;
-    let rateCost = rateTimeUnits * rate.cost;
-    if (rateCost > maxCost) {
+    const maxCost = rate.maxCost ? new Money(rate.maxCost, currency) : null;
+    let rateCost = new Money(rate.cost, currency).multiply(rateTimeUnits);
+    if (maxCost && rateCost.greaterThan(maxCost)) {
       rateCost = maxCost;
       remainingMinutes = 0; // maxed out
     } else {
       remainingMinutes -= rateTimeUnits * rate.per;
     }
-    totalCost += rateCost;
+    totalCost = totalCost.add(rateCost);
   }
 
   return totalCost;

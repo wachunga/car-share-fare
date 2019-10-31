@@ -25,14 +25,14 @@ export type PackageConfig = {
   maxPassengers?: number;
   distance?: DistanceConfig;
   time?: TimeConfig[];
-  custom?: (minutes: number, distance: number) => number;
+  custom?: (minutes: number, distance: number) => Money;
 } & CarShareConfig;
 
 export type CarShareConfig = {
   service: string;
   url?: string;
   lastUpdated?: string;
-  currency?: string;
+  currency: string;
   fees?: CarShareFees;
   distance?: DistanceConfig;
 };
