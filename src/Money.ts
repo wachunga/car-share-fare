@@ -61,6 +61,18 @@ export class Money {
 
     return this.amount < other.amount;
   }
+
+  format(locale: string = 'en-CA') {
+    return this.getValue().toLocaleString(locale, {
+      style: 'currency',
+      currency: this.currency,
+    });
+  }
+
+  getValue(): number {
+    // assumes precision 2, like CAD etc.
+    return this.amount / 100;
+  }
 }
 function isFloat(n: number): boolean {
   return Number(n) === n && n % 1 !== 0;
