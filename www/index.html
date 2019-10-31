@@ -175,7 +175,7 @@
               <div class="results__service-name">${row.service}</div>
               <div class="results__package-name">${row.package}</div>
             </th>
-            <td class="results__cost-cell">$${row.total.amount / 100}</td>
+            <td class="results__cost-cell">${row.total.format()}</td>
           </tr>`;
         })
         .join('\n');

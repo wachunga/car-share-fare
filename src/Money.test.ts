@@ -93,4 +93,28 @@ describe('Money', () => {
       expect(a.lessThan(b)).toBe(true);
     });
   });
+
+  describe('format', () => {
+    // NOTE: en-CA locale is not available in node unless we add full-icu
+    // https://stackoverflow.com/questions/55183776/different-behaviour-of-intl-numberformat-in-node-and-browser/55183777#55183777
+    it('CAD', () => {
+      const a = new Money(123, 'CAD');
+      expect(a.format()).toBe('$1.23');
+    });
+
+    it('includes thousand separators', () => {
+      const a = new Money(12345678, 'CAD');
+      expect(a.format()).toBe('$123,456.78');
+    });
+
+    it('USD', () => {
+      const a = new Money(123, 'USD');
+      expect(a.format()).toBe('US$1.23');
+    });
+
+    it('EUR', () => {
+      const a = new Money(123, 'EUR');
+      expect(a.format()).toBe('€1.23');
+    });
+  });
 });
