@@ -11,7 +11,7 @@ describe('computeAllTripCosts', () => {
 
   it('returns many packages', () => {
     const computed = computeAllTripCosts(packages, minutes, distance);
-    expect(computed.length).toBeGreaterThan(5);
+    expect(computed.length).toBeGreaterThan(4);
   });
 
   it('packages are sorted by ascending total cost', () => {
@@ -246,86 +246,6 @@ describe('computeTripCost', () => {
         'total.amount',
         tripCost + timeCost
       );
-    });
-  });
-
-  describe('car2go', () => {
-    const smartMinutePackage = findPackage('smart - minute rate') as PackageConfig;
-    const mercedesMinutePackage = findPackage('Mercedes - minute rate') as PackageConfig;
-    const tripCost = 1_00;
-    const minuteRateSmart = 32;
-    const surchargePerExtraMinuteSmart = 37;
-    const surchargePerExtraKm = 49;
-    const minimalKm = 10;
-
-    it('minimum cost', () => {
-      const time = 1;
-      const timeCost = time * minuteRateSmart;
-      const distance = 0;
-      expect(computeTripCost(smartMinutePackage, time, distance)).toHaveProperty(
-        'total.amount',
-        tripCost + timeCost
-      );
-    });
-
-    it('smart is cheapest option', () => {
-      const time = 16;
-      const distance = 10;
-      const smartCost = computeTripCost(smartMinutePackage, time, distance);
-      const mercedesCost = computeTripCost(mercedesMinutePackage, time, distance);
-      expect(smartCost.total.amount).toBeLessThan(mercedesCost.total.amount);
-    });
-
-    it('costs extra beyond included km', () => {
-      const time = 16;
-      const timeCost = time * minuteRateSmart;
-      const longDistance = 300; // only 200 included
-      const cost = computeTripCost(smartMinutePackage, time, longDistance);
-      expect(cost.total.amount).toBeCloseTo(tripCost + timeCost + 100 * surchargePerExtraKm);
-    });
-
-    describe('minute rate', () => {
-      it('16 minutes', () => {
-        const time = 16;
-        const timeCost = 16 * minuteRateSmart;
-        expect(computeTripCost(smartMinutePackage, time, minimalKm)).toHaveProperty(
-          'total.amount',
-          tripCost + timeCost
-        );
-      });
-
-      it('1 hour, 10 minutes', () => {
-        const time = toHours(1) + 10;
-        const timeCost = 70 * minuteRateSmart;
-        expect(computeTripCost(smartMinutePackage, time, minimalKm)).toHaveProperty(
-          'total.amount',
-          tripCost + timeCost
-        );
-      });
-    });
-
-    describe('longer packages', () => {
-      const smartHourPackage = findPackage('smart - 1 hour') as PackageConfig;
-      const mercedesDaysPackage = findPackage('Mercedes - 3 days') as PackageConfig;
-
-      it('1 hour, 10 minutes', () => {
-        const time = toHours(1) + 10;
-        const hourPackageCost = 13_00;
-        const timeCost = hourPackageCost + surchargePerExtraMinuteSmart * 10;
-        expect(computeTripCost(smartHourPackage, time, minimalKm)).toHaveProperty(
-          'total.amount',
-          tripCost + timeCost
-        );
-      });
-
-      it('2 days, 23 hours, 40 minutes', () => {
-        const time = toDays(2) + toHours(23) + 40;
-        const timeCost = 249_00;
-        const longDistanceButStillIncludedInPackage = 590;
-        expect(
-          computeTripCost(mercedesDaysPackage, time, longDistanceButStillIncludedInPackage)
-        ).toHaveProperty('total.amount', tripCost + timeCost);
-      });
     });
   });
 });
