@@ -1,19 +1,21 @@
 import { computeTripCost, computeAllTripCosts } from './cost';
 import { toHours, toDays } from './time';
-import { packages, findPackage, PackageConfig } from '../config';
+import { findPackage, PackageConfig, getAllPackages } from '../config';
 import { Money } from '../Money';
 
-describe('computeCosts', () => {
+const packages = getAllPackages();
+
+describe('computeAllTripCosts', () => {
   const minutes = 30;
   const distance = 10;
 
   it('returns many packages', () => {
-    const computed = computeAllTripCosts(minutes, distance);
+    const computed = computeAllTripCosts(packages, minutes, distance);
     expect(computed.length).toBeGreaterThan(5);
   });
 
   it('packages are sorted by ascending total cost', () => {
-    const computed = computeAllTripCosts(minutes, distance);
+    const computed = computeAllTripCosts(packages, minutes, distance);
     computed.forEach((tripCost, i) => {
       if (i === 0) {
         return;

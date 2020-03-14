@@ -1,8 +1,8 @@
-import { packages, PackageConfig } from '../config';
 import { calculateTripFees } from './trip';
 import { calculateTimeCost } from './time';
 import { calculateDistanceCost } from './distance';
 import { Money } from '../Money';
+import { PackageConfig } from '../config/types';
 
 type TripCost = {
   package: string;
@@ -16,8 +16,12 @@ type TripCost = {
 };
 
 /** Calculate trip cost for all available packages. */
-export function computeAllTripCosts(minutes: number, distance: number): TripCost[] {
-  return packages
+export function computeAllTripCosts(
+  carSharePackages: PackageConfig[],
+  minutes: number,
+  distance: number
+): TripCost[] {
+  return carSharePackages
     .map(pack => computeTripCost(pack, minutes, distance))
     .sort((costA, costB) => costA.total.amount - costB.total.amount);
 }
