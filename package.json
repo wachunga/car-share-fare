@@ -1,6 +1,6 @@
 {
   "name": "car-share-fare",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "main": "dist/index.js",
   "umd:main": "dist/car-share-fare.umd.production.js",
   "module": "dist/car-share-fare.es.production.js",
