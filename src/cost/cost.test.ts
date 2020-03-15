@@ -248,4 +248,44 @@ describe('computeTripCost', () => {
       );
     });
   });
+
+  describe('lyft', () => {
+    const lyftPackage = findPackage('Lyft') as PackageConfig;
+    const tripCost = 7_50;
+    const minuteRate = 33;
+    const distanceRate = 65;
+
+    it('minimum cost', () => {
+      const time = 1;
+      const timeCost = time * minuteRate;
+      const distance = 1;
+      const distanceCost = distance * distanceRate;
+      expect(computeTripCost(lyftPackage, time, distance)).toHaveProperty(
+        'total.amount',
+        tripCost + timeCost + distanceCost
+      );
+    });
+
+    it('short trip', () => {
+      const time = 4;
+      const timeCost = time * minuteRate;
+      const distance = 3;
+      const distanceCost = distance * distanceRate;
+      expect(computeTripCost(lyftPackage, time, distance)).toHaveProperty(
+        'total.amount',
+        tripCost + timeCost + distanceCost
+      );
+    });
+
+    it('medium trip', () => {
+      const time = 14;
+      const timeCost = time * minuteRate;
+      const distance = 7;
+      const distanceCost = distance * distanceRate;
+      expect(computeTripCost(lyftPackage, time, distance)).toHaveProperty(
+        'total.amount',
+        tripCost + timeCost + distanceCost
+      );
+    });
+  });
 });
