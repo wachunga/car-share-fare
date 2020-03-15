@@ -6,6 +6,12 @@ Knowing which car share to use in Vancouver ([the car share capital of North Ame
 
 Try it out at https://carshare.now.sh
 
+## Supported services
+
+- [Evo](https://evo.ca) - one-way carsharing company
+- [Lyft](https://www.lyft.com/rider/cities/vancouver-bc) - ridesharing company
+- [Modo](https://modo.coop) - two-way carsharing co-operative
+
 ## Development
 
 This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
