@@ -1,3 +1,5 @@
+import { Money } from '../Money';
+
 export type CarShareFees = {
   trip?: number;
   daily?: number; // fees on longer trips
