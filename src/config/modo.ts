@@ -20,7 +20,10 @@ const commonConfig: CarShareConfig = {
 const modoPlusConfig = {
   distance: {
     unit: 'km',
-    steps: [{ start: 0, end: 25, cost: 40 }, { start: 25, cost: 28 }],
+    steps: [
+      { start: 0, end: 25, cost: 40 },
+      { start: 25, cost: 28 },
+    ],
   },
 };
 
