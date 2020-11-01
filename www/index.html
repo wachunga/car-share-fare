@@ -95,6 +95,9 @@
         }
       }
 
+      .results__status-too-many-passengers {
+        color: #777;
+      }
       .results__title {
         padding-bottom: 1rem;
         border-bottom: 2px solid #ddd;
@@ -137,6 +140,11 @@
         <label><input id="distanceInput" type="number" min="0" value="0" /> km</label>
         <p id="distanceError" class="validation" hidden>How far is your trip?</p>
       </div>
+      <div class="fieldset passengers-fieldset">
+        <h2 class="section-heading">Passengers</h2>
+        <label><input id="passengersInput" type="number" min="1" value="1"/></label>
+        <p id="passengersError" class="validation" hidden>How many people are travelling?</p>
+      </div>
       <button type="submit" class="calculate-button">Calculate Costs</button>
       <small class="calculate-disclaimer"
         >* Excluding tax.
@@ -166,6 +174,7 @@
     const daysInput = document.querySelector('#daysInput');
 
     const distanceInput = document.querySelector('#distanceInput');
+    const passengersInput = document.querySelector('#passengersInput');
     const resultsSection = document.querySelector('#results');
     const resultsTable = document.querySelector('.results__table');
 
@@ -205,20 +214,37 @@
       );
       if (!distanceValid) return;
 
-      const costComparison = computeAllTripCosts(packages, minutes, distance);
+      const passengers = parseInt(passengersInput.value, 10) || 0;
+      const passengersValid = validateInput(
+        passengers,
+        passengersInput,
+        document.querySelector('#passengersError')
+      );
+      if (!passengersValid) return;
+
+      const costComparison = computeAllTripCosts(packages, minutes, distance, passengers);
       console.log(costComparison);
       resultsTable.innerHTML = buildResultsTable(costComparison);
       resultsSection.removeAttribute('hidden');
     }
 
+    function statusLabel(status) {
+      if (status === 'too-many-passengers') {
+        return '😞 Not enough room';
+      }
+      return null;
+    }
+
     function buildResultsTable(data) {
       const rowData = data
         .map((row, i) => {
-          return `<tr>
+          const status = statusLabel(row.status);
+          return `<tr class="results__status-${row.status}">
             <td class="results__index-cell">${1 + i}.</td>
             <th>
               <div class="results__service-name">${row.service}</div>
               <div class="results__package-name">${row.package}</div>
+              ${status && `<div class="results__status">${status}</div>`}
             </th>
             <td class="results__cost-cell">${row.total.format()}</td>
           </tr>`;

@@ -24,7 +24,7 @@ type DistanceSteps = {
 export type PackageConfig = {
   name: string;
   vehicle?: string;
-  maxPassengers?: number;
+  maxPassengers: number;
   distance?: DistanceConfig;
   time?: TimeConfig[];
   custom?: (minutes: number, distance: number) => Money;

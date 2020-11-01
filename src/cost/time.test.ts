@@ -8,12 +8,14 @@ describe.only('calculateTimeCost', () => {
     const noDistanceConfig = {
       name: 'single step',
       service: 'n/a',
+      maxPassengers: 4,
       currency: 'CAD',
     };
 
     const simpleConfig: PackageConfig = {
       name: 'simple',
       service: 'n/a',
+      maxPassengers: 4,
       currency: 'CAD',
       time: [
         { start: 0, per: 60, cost: hourlyRate, maxCost: dailyRate },

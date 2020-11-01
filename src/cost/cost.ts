@@ -7,6 +7,7 @@ import { PackageConfig } from '../config/types';
 type TripCost = {
   package: string;
   service: string;
+  status: 'valid' | 'too-many-passengers';
   total: Money;
   breakdown: {
     fees: Money;
@@ -19,11 +20,20 @@ type TripCost = {
 export function computeAllTripCosts(
   carSharePackages: PackageConfig[],
   minutes: number,
-  distance: number
+  distance: number,
+  passengers: number = 1
 ): TripCost[] {
   return carSharePackages
-    .map(pack => computeTripCost(pack, minutes, distance))
-    .sort((costA, costB) => costA.total.amount - costB.total.amount);
+    .map(pack => computeTripCost(pack, minutes, distance, passengers))
+    .sort((costA, costB) => {
+      if (costA.status !== 'valid' && costB.status === 'valid') {
+        return 1;
+      }
+      if (costA.status === 'valid' && costB.status !== 'valid') {
+        return -1;
+      }
+      return costA.total.amount - costB.total.amount;
+    });
 }
 
 function calculateCustomCost(
@@ -42,7 +52,8 @@ function calculateCustomCost(
 export function computeTripCost(
   carSharePackage: PackageConfig,
   minutes: number = 0,
-  distance: number = 0
+  distance: number = 0,
+  passengers: number = 1
 ): TripCost {
   if (!carSharePackage) {
     throw new Error(`No package provided`);
@@ -54,9 +65,11 @@ export function computeTripCost(
     distance: calculateDistanceCost(carSharePackage, distance),
     custom: calculateCustomCost(carSharePackage, minutes, distance),
   };
+  const status = carSharePackage.maxPassengers < passengers ? 'too-many-passengers' : 'valid';
   return {
     package: carSharePackage.name,
     service: carSharePackage.service,
+    status,
     total: Money.sum([breakdown.fees, breakdown.time, breakdown.distance, breakdown.custom]),
     breakdown,
   };
