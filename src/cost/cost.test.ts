@@ -14,6 +14,18 @@ describe('computeAllTripCosts', () => {
     expect(computed.length).toBeGreaterThan(4);
   });
 
+  it('small passenger count changes nothing', () => {
+    const computed = computeAllTripCosts(packages, minutes, distance, 2);
+    const available = computed.filter(tripCost => tripCost.status === 'valid');
+    expect(available.length).toBe(computed.length);
+  });
+
+  it('large passenger count results in some invalid', () => {
+    const computed = computeAllTripCosts(packages, minutes, distance, 10);
+    const available = computed.filter(tripCost => tripCost.status === 'valid');
+    expect(available.length).toBe(0);
+  });
+
   it('packages are sorted by ascending total cost', () => {
     const computed = computeAllTripCosts(packages, minutes, distance);
     computed.forEach((tripCost, i) => {
@@ -26,6 +38,23 @@ describe('computeAllTripCosts', () => {
         throw new Error(`Not sorted correctly: ${tripCosts.join('\n')}`);
       }
     });
+  });
+
+  it('invalid packages come last', () => {
+    const computed = computeAllTripCosts(packages, minutes, distance, 6);
+    const mapped = computed.map(tripCost =>
+      [tripCost.service, tripCost.package, tripCost.status].join(' ')
+    );
+
+    expect(mapped).toStrictEqual([
+      'Modo Daily Drives - Modo Plus valid',
+      'Modo Day Tripper - Daily Drives valid',
+      'Modo Large and Loadable - Modo Plus valid',
+      'Lyft Lyft XL valid',
+      'Modo Oversize and Premium - Modo Plus too-many-passengers',
+      'Evo  too-many-passengers',
+      'Lyft Lyft too-many-passengers',
+    ]);
   });
 });
 
@@ -49,6 +78,7 @@ describe('computeTripCost', () => {
     const myPackage: PackageConfig = {
       service: 'Test',
       currency: 'CAD',
+      maxPassengers: 5,
       name: 'Floating Point',
       fees: {
         trip: 20,
