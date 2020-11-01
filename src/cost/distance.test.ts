@@ -5,12 +5,14 @@ describe('calculateDistanceCost', () => {
     const noDistanceConfig = {
       name: 'single step',
       currency: 'CAD',
+      maxPassengers: 4,
       service: 'n/a',
     };
 
     const simpleDistanceConfig = {
       name: 'single step',
       currency: 'CAD',
+      maxPassengers: 4,
       service: 'n/a',
       distance: {
         unit: 'km',
@@ -38,6 +40,7 @@ describe('calculateDistanceCost', () => {
     const multiDistanceConfig = {
       name: 'multi step',
       currency: 'CAD',
+      maxPassengers: 4,
       service: 'n/a',
       distance: {
         unit: 'km',
