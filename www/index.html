@@ -79,6 +79,10 @@
         width: 100px;
       }
 
+      .validation {
+        color: var(--primary-accent);
+      }
+
       @media (max-width: 576px) {
         .time-fieldset label {
           display: block;
@@ -123,13 +127,15 @@
     <form>
       <div class="fieldset time-fieldset">
         <h2 class="section-heading">Time</h2>
-        <label><input id="minutesInput" type="number" autofocus min="0" /> mins</label>
-        <label><input id="hoursInput" type="number" min="0" /> hours</label>
-        <label><input id="daysInput" type="number" min="0" /> days</label>
+        <label><input id="minutesInput" type="number" autofocus min="0" value="0" /> mins</label>
+        <label><input id="hoursInput" type="number" min="0" value="0" /> hours</label>
+        <label><input id="daysInput" type="number" min="0" value="0" /> days</label>
+        <p id="timeError" class="validation" hidden>How long will your trip take?</p>
       </div>
       <div class="fieldset distance-fieldset">
         <h2 class="section-heading">Distance</h2>
-        <label><input id="distanceInput" type="number" min="0" /> km</label>
+        <label><input id="distanceInput" type="number" min="0" value="0" /> km</label>
+        <p id="distanceError" class="validation" hidden>How far is your trip?</p>
       </div>
       <button type="submit" class="calculate-button">Calculate Costs</button>
       <small class="calculate-disclaimer"
@@ -170,10 +176,36 @@
       return minutes + hours * 60 + days * 24 * 60;
     }
 
+    function validateInput(value, inputElement, errorElement) {
+      if (value === 0) {
+        errorElement.removeAttribute('hidden');
+        inputElement.focus();
+        resultsSection.setAttribute('hidden', '');
+        return false;
+      }
+      return true;
+    }
+
     function calculate(event) {
       event.preventDefault();
+
+      document
+        .querySelectorAll('.validation')
+        .forEach(element => element.setAttribute('hidden', ''));
+
       const minutes = getTimeMinutes();
-      const costComparison = computeAllTripCosts(packages, minutes, distanceInput.value);
+      const timeValid = validateInput(minutes, minutesInput, document.querySelector('#timeError'));
+      if (!timeValid) return;
+
+      const distance = parseInt(distanceInput.value, 10) || 0;
+      const distanceValid = validateInput(
+        distance,
+        distanceInput,
+        document.querySelector('#distanceError')
+      );
+      if (!distanceValid) return;
+
+      const costComparison = computeAllTripCosts(packages, minutes, distance);
       console.log(costComparison);
       resultsTable.innerHTML = buildResultsTable(costComparison);
       resultsSection.removeAttribute('hidden');
