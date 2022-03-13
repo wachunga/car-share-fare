@@ -142,7 +142,7 @@
       </div>
       <div class="fieldset passengers-fieldset">
         <h2 class="section-heading">Passengers</h2>
-        <label><input id="passengersInput" type="number" min="1" value="1"/></label>
+        <label><input id="passengersInput" type="number" min="1" value="1" /></label>
         <p id="passengersError" class="validation" hidden>How many people are travelling?</p>
       </div>
       <button type="submit" class="calculate-button">Calculate Costs</button>
@@ -200,7 +200,7 @@
 
       document
         .querySelectorAll('.validation')
-        .forEach(element => element.setAttribute('hidden', ''));
+        .forEach((element) => element.setAttribute('hidden', ''));
 
       const minutes = getTimeMinutes();
       const timeValid = validateInput(minutes, minutesInput, document.querySelector('#timeError'));
@@ -244,7 +244,7 @@
             <th>
               <div class="results__service-name">${row.service}</div>
               <div class="results__package-name">${row.package}</div>
-              ${status && `<div class="results__status">${status}</div>`}
+              ${status ? `<div class="results__status">${status}</div>` : ''}
             </th>
             <td class="results__cost-cell">${row.total.format()}</td>
           </tr>`;
