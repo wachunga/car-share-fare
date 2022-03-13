@@ -99,7 +99,7 @@ describe('computeTripCost', () => {
       const dailyDrivesPackage = findPackage('Daily Drives') as PackageConfig;
       const costPerKm = 40;
       const hourlyRate = 4_00;
-      const dailyRate = 52_00;
+      const dailyRate = 48_00;
 
       it('minimum cost - daily drives', () => {
         const time = 1;
@@ -164,7 +164,7 @@ describe('computeTripCost', () => {
           [3, 125, perTripFee + 50_00], // not enough to trigger DayTripper
           [10, 200, perTripFee + dayTripperDayCost],
           [12, 150, perTripFee + dayTripperDayCost],
-          [24, 125, perTripFee + dayTripperDayCost],
+          [24, 140, perTripFee + dayTripperDayCost],
           [25, 140, perTripFee + dayTripperDayCost + hourlyRate],
           [24, 250, perTripFee + dayTripperDayCost],
           [25, 300, perTripFee + dayTripperDayCost + hourlyRate + 50 * costPerKmOverage],
@@ -219,9 +219,9 @@ describe('computeTripCost', () => {
   describe('evo', () => {
     const evoPackage = findPackage('Evo') as PackageConfig;
     const tripCost = 1_00;
-    const minuteRate = 41;
-    const hourlyRate = 14_99;
-    const dailyRate = 89_99;
+    const minuteRate = 45;
+    const hourlyRate = 16_99;
+    const dailyRate = 99_99;
     const irrelevantDistance = 10;
 
     it('minimum cost', () => {
