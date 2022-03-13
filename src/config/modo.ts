@@ -8,7 +8,7 @@ const currency = 'CAD';
 const commonConfig: CarShareConfig = {
   service: 'Modo',
   url: 'https://www.modo.coop/plans/#tile-join-individual',
-  lastUpdated: '2019-08-05',
+  lastUpdated: '2022-03-13',
   currency,
   fees: {
     trip: 1_50, // "co-op innovation fee"
@@ -40,8 +40,8 @@ const packages: PackageConfig[] = [
     maxPassengers: 7,
     time: [
       { start: 0, per: 15, cost: 1_00 },
-      { per: 60, cost: 4_00, maxCost: 52_00 },
-      { per: 60 * 24, cost: 52_00 },
+      { per: 60, cost: 4_00, maxCost: 48_00 },
+      { per: 60 * 24, cost: 48_00 },
     ],
   },
   {
@@ -52,8 +52,8 @@ const packages: PackageConfig[] = [
     maxPassengers: 8,
     time: [
       { start: 0, per: 15, cost: 1_50 },
-      { per: 60, cost: 6_00, maxCost: 78_00 },
-      { per: 60 * 24, cost: 78_00 },
+      { per: 60, cost: 6_00, maxCost: 72_00 },
+      { per: 60 * 24, cost: 72_00 },
     ],
   },
   {
@@ -64,8 +64,8 @@ const packages: PackageConfig[] = [
     maxPassengers: 5, // promaster is only 3
     time: [
       { start: 0, per: 15, cost: 2_25 },
-      { per: 60, cost: 9_00, maxCost: 117_00 },
-      { per: 60 * 24, cost: 117_00 },
+      { per: 60, cost: 9_00, maxCost: 108_00 },
+      { per: 60 * 24, cost: 108_00 },
     ],
   },
   {

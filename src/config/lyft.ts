@@ -3,19 +3,19 @@ import { CarShareConfig } from './types';
 const commonConfig: CarShareConfig = {
   service: 'Lyft',
   url: 'https://www.lyft.com/pricing/YVR',
-  lastUpdated: '2020-03-14',
+  lastUpdated: '2022-03-13',
   currency: 'CAD',
-  fees: {
-    trip: 5_00 + 2_50, // minimum fare + service fee
-    annual: 0,
-    registration: 0,
-  },
 };
 
 const packages = [
   {
     name: 'Lyft',
     ...commonConfig,
+    fees: {
+      trip: 5_00 + 2_50, // minimum fare + service fee
+      annual: 0,
+      registration: 0,
+    },
     vehicle: 'Varies',
     maxPassengers: 4,
     distance: {
@@ -27,6 +27,11 @@ const packages = [
   {
     name: 'Lyft XL',
     ...commonConfig,
+    fees: {
+      trip: 8_00 + 2_75, // minimum fare + service fee
+      annual: 0,
+      registration: 0,
+    },
     vehicle: 'Varies',
     maxPassengers: 6,
     distance: {
