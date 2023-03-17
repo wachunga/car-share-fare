@@ -1,21 +1,24 @@
 {
   "name": "car-share-fare",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "main": "dist/index.js",
   "umd:main": "dist/car-share-fare.umd.production.js",
   "module": "dist/car-share-fare.es.production.js",
   "typings": "dist/index.d.ts",
+  "engines": {
+    "node": "^18"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
     "start": "npx http-server dist/ -o",
     "build": "tsdx build --format esm",
-    "build:watch": "watch 'yarn build' src www",
-    "now-build": "yarn build",
-    "pretest": "yarn lint",
+    "build:watch": "watch 'npm run build' src www",
+    "now-build": "npm run build",
+    "pretest": "npm run lint",
     "test": "tsdx test --watchAll",
-    "pretest:ci": "yarn lint",
+    "pretest:ci": "npm run lint",
     "test:ci": "tsdx test",
     "lint": "tsdx lint src"
   },
