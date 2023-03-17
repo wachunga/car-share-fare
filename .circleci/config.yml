@@ -12,4 +12,4 @@ jobs:
           command: npm install --frozen-lockfile
       - run:
           name: Run tests
-          command: npm test:ci --runInBand
+          command: npm run test:ci --runInBand
