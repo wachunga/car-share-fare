@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: Install and build package
-          command: yarn install --frozen-lockfile
+          command: npm install --frozen-lockfile
       - run:
           name: Run tests
-          command: yarn test:ci --runInBand
+          command: npm test:ci --runInBand

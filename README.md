@@ -22,17 +22,17 @@ This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
 - Run `npm version <patch/minor/major>` (this updates package.json and creates a tag).
 - Run `git push --tags`.
 
-### `npm start` or `yarn start`
+### `npm start`
 
 Start the app.
 
-### `npm run build` or `yarn build`
+### `npm run build`
 
 Bundles the package (using Rollup) and copies static assets to the `dist` folder.
 
 Use `build:watch` during development to watch for changes.
 
-### `npm test` or `yarn test`
+### `npm test`
 
 Runs the test watcher (Jest) in an interactive mode.
 By default, runs tests related to files changed since the last commit.
