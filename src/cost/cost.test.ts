@@ -218,10 +218,10 @@ describe('computeTripCost', () => {
 
   describe('evo', () => {
     const evoPackage = findPackage('Evo') as PackageConfig;
-    const tripCost = 1_00;
-    const minuteRate = 45;
-    const hourlyRate = 16_99;
-    const dailyRate = 99_99;
+    const tripCost = 1_25;
+    const minuteRate = 49;
+    const hourlyRate = 17_99;
+    const dailyRate = 104_99;
     const irrelevantDistance = 10;
 
     it('minimum cost', () => {
