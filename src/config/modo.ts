@@ -8,22 +8,19 @@ const currency = 'CAD';
 const commonConfig: CarShareConfig = {
   service: 'Modo',
   url: 'https://www.modo.coop/plans/#tile-join-individual',
-  lastUpdated: '2022-03-13',
+  lastUpdated: '2025-01-22',
   currency,
   fees: {
-    trip: 1_50, // "co-op innovation fee"
-    annual: 1_00,
-    share: 500_00,
+    trip: 3_00, // "co-op innovation fee" - $1 for Ev, $3 for others
+    annual: 1_00, // admin fee
+    share: 500_00, // one time when you join (redeemable when you leave)
   },
 };
 
 const modoPlusConfig = {
   distance: {
     unit: 'km',
-    steps: [
-      { start: 0, end: 25, cost: 40 },
-      { start: 25, cost: 28 },
-    ],
+    steps: [{ start: 0, cost: 35 }],
   },
 };
 
@@ -39,9 +36,9 @@ const packages: PackageConfig[] = [
     vehicle: 'Prius, Rondo, ...',
     maxPassengers: 7,
     time: [
-      { start: 0, per: 15, cost: 1_00 },
-      { per: 60, cost: 4_00, maxCost: 48_00 },
-      { per: 60 * 24, cost: 48_00 },
+      { start: 0, per: 15, cost: 1_25 },
+      { per: 60, cost: 5_00, maxCost: 60_00 },
+      { per: 60 * 24, cost: 60_00 },
     ],
   },
   {
@@ -51,21 +48,21 @@ const packages: PackageConfig[] = [
     vehicle: 'Rogue, Tucson, Sedona, RAV4, Grand Caravan, Sienna, NEXO, Frontier, NV200',
     maxPassengers: 8,
     time: [
-      { start: 0, per: 15, cost: 1_50 },
-      { per: 60, cost: 6_00, maxCost: 72_00 },
-      { per: 60 * 24, cost: 72_00 },
+      { start: 0, per: 15, cost: 1_75 },
+      { per: 60, cost: 7_00, maxCost: 84_00 },
+      { per: 60 * 24, cost: 84_00 },
     ],
   },
   {
-    name: 'Oversize and Premium - Modo Plus',
+    name: 'Oversized - Modo Plus',
     ...commonConfig,
     ...modoPlusConfig,
     vehicle: 'BMW X1, Ram Promaster',
     maxPassengers: 5, // promaster is only 3
     time: [
-      { start: 0, per: 15, cost: 2_25 },
-      { per: 60, cost: 9_00, maxCost: 108_00 },
-      { per: 60 * 24, cost: 108_00 },
+      { start: 0, per: 15, cost: 2_50 },
+      { per: 60, cost: 10_00, maxCost: 120_00 },
+      { per: 60 * 24, cost: 120_00 },
     ],
   },
   {
@@ -74,7 +71,7 @@ const packages: PackageConfig[] = [
     vehicle: 'Prius, Rondo, ...',
     maxPassengers: 7,
     custom: function modoDayTripper(minutes, distance) {
-      const dayTripperCost = new Money(90_00, currency);
+      const dayTripperCost = new Money(100_00, currency);
       const regularPackage = packages.find(
         p => p.name === 'Daily Drives - Modo Plus'
       ) as PackageConfig;
@@ -97,7 +94,7 @@ const packages: PackageConfig[] = [
 
         if (dayTripperCost.lessThan(regularCost)) {
           cost = cost.add(dayTripperCost);
-          distanceRemaining -= Math.min(distanceRemaining, 250);
+          distanceRemaining -= Math.min(distanceRemaining, 500);
           usingDayTripper = true;
         } else {
           cost = cost.add(regularCost);

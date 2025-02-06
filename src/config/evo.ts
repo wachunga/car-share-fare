@@ -3,7 +3,7 @@ import { CarShareConfig } from './types';
 const commonConfig: CarShareConfig = {
   service: 'Evo',
   url: 'https://evo.ca/rates',
-  lastUpdated: '2023-03-17',
+  lastUpdated: '2025-01-22',
   currency: 'CAD',
   fees: {
     trip: 1_25, // first 200 trips per calendar year
@@ -17,7 +17,7 @@ const packages = [
   {
     name: '', // no need for name when same as service
     ...commonConfig,
-    vehicle: 'Toyota Prius C',
+    vehicle: 'Toyota Prius C', // there are actually other cars now, too
     maxPassengers: 5,
     time: [
       { per: 1, cost: 49, maxCost: 17_99 },
