@@ -9,8 +9,8 @@ Try it out at https://carshare.now.sh
 ## Supported services
 
 - [Evo](https://evo.ca) - one-way carsharing company
-- [Lyft](https://www.lyft.com/rider/cities/vancouver-bc) - ridesharing company
 - [Modo](https://modo.coop) - two-way carsharing co-operative
+- [Lyft](https://www.lyft.com/rider/cities/vancouver-bc) - ridesharing company
 
 ## Development
 
