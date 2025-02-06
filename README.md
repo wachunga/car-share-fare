@@ -1,6 +1,6 @@
 # car-share-fare
 
-[![CircleCI](https://circleci.com/gh/wachunga/car-share-fare.svg?style=svg)](https://circleci.com/gh/wachunga/car-share-fare)
+![CI Status](https://github.com/wachunga/car-share-fare/actions/workflows/node.js.yml/badge.svg?branch=master)
 
 Knowing which car share to use in Vancouver ([the car share capital of North America](https://www.cbc.ca/news/canada/british-columbia/vancouver-car-share-car2go-evo-1.4504926)) is non-trivial. This tool aims to help by making it easy to compare costs.
 
@@ -9,8 +9,8 @@ Try it out at https://carshare.now.sh
 ## Supported services
 
 - [Evo](https://evo.ca) - one-way carsharing company
-- [Lyft](https://www.lyft.com/rider/cities/vancouver-bc) - ridesharing company
 - [Modo](https://modo.coop) - two-way carsharing co-operative
+- [Lyft](https://www.lyft.com/rider/cities/vancouver-bc) - ridesharing company
 
 ## Development
 
